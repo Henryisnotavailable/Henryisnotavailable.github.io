@@ -1,2 +1,7 @@
+---
+title: Reel Writeup
+
+---
+
 # Reel
-![Reel HTB Icon](/Henryisnotavailable/assets/images/reel.png)
+![Reel HTB Icon](/assets/images/reel.png)
