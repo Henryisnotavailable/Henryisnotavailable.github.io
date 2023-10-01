@@ -3,9 +3,10 @@
 ---
 
 ## Summary
-Reel was a pretty tricky box, as the name implies, it involved a phishing attack, which is pretty uncommon in CTFs! 
-After obtaining command execution via phishing (using a malicious macro) we find an XML credential file allowing us to pivot to a new user. 
-Using bloodhound (after some intense proxying) we can eventually find out this user can abuse ACLs to reset the password of another user. This new user has GenericWrite over a group with full access to the filesystem, meaning we can add our controlled users to this group.
+Reel was a pretty tricky box, as the name implies, it involved a phishing attack, which is pretty uncommon in CTFs!  
+After obtaining command execution via phishing (using a malicious macro) we find an XML credential file allowing us to pivot to a new user.  
+Using bloodhound (after some proxying) we can eventually find out this user can abuse ACLs to reset the password of another user.  
+This new user has GenericWrite over a group with full access to the filesystem, meaning we can add our controlled users to this group.
 
 ## Foothold
 
@@ -28,7 +29,7 @@ Completed in 3 seconds
 ```
 Well... that worked
 
-Running it manually works, I think the issue is with nmap itself reporting the host as down (even though it's responding to pings), forcing the script to auto-exit.
+Running it manually works, I think the issue is with nmap itself reporting the host as down (even though it's responding to pings), forcing the script to auto-exit?
 
 Anyway, a quick manual scan shows the following ports
 ```bash
@@ -116,7 +117,8 @@ ftp> ls
 05-28-18  02:01PM                  124 readme.txt
 10-31-17  10:13PM                14581 Windows Event Forwarding.docx
 ```
-Looks like some interesting files. Let's download them, and take a look.
+Looks like some interesting files.  
+Let's download them, and take a look.
 
 #### readme.txt
 ```
@@ -148,7 +150,7 @@ So from these files we can deduce
 - There's potential hosts WEF.HTB.LOCAL and LAPTOP12.HTB.LOCAL
 - It looks like Windows Event Log forwarding is in place and is being sent to WEF.HTB.LOCAL
 
-If we found the name of the user receiving the mail, we might be able to (ab)use a malicious RTF document?
+If we found the name of the user receiving the mail, we might be able to createl a malicious RTF document?
 
 ### SMTP (Port 25)
 
@@ -178,7 +180,7 @@ Domain Sid: S-1-5-21-2648318136-3688571242-2924127574
 But everything else fails.
 
 ### Exiftool
-As some of the files we found in FTP were .docx files, they **might** contain metadata relating to a user.
+As some of the files we found in FTP were .docx files, they **might** contain metadata relating to a user. 
 No usernames were returned from AppLocker.docx, but the Windows Event Forwarding.docx actually contains an email!
 ```bash
 ┌──(kali㉿kali)-[~/…/HTB/hard/reel/foothold]
@@ -194,8 +196,8 @@ So we have a target, now to construct an exploit.
 
 ### RTF
 
-A bit of googling finds this, which looks somewhat promising [CVE-2017-0199 script](https://www.exploit-db.com/exploits/41894)
-Now this box was released in 2018, so it lines up pretty well that this would've been **relatively** recent news on release.
+A bit of googling finds this, which looks somewhat promising [CVE-2017-0199 script](https://www.exploit-db.com/exploits/41894).  
+Now this box was released in 2018, so it lines up pretty well that this would've been **relatively** recent news on release.  
 
 A high-level flow of the exploit is as follows - [Source](https://www.mdsec.co.uk/2017/04/exploiting-cve-2017-0199-hta-handler-vulnerability/)
 
