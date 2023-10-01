@@ -807,5 +807,21 @@ HTB.LOCAL\mark:1602:aad3b435b51404eeaad3b435b51404ee:151e628f8eca699d542a54f70ec
 HTB.LOCAL\rosie:1605:aad3b435b51404eeaad3b435b51404ee:615c5c68f4852726fd0717cc63240e5a:::
 ```
 
+## Security Flaws
+One thing I like doing, is thinking about how to patch the system that I just exploited. What are some of the misconfigurations the author intentionally created?
+
+0. Wide open ports - Services like FTP,SSH,SMB and SMTP should not be wide open, especially if **no** authentication is required (like we saw when using SMTP and FTP).
+1. Lack of user awareness - The user (Nico) opened a random email from mrevil@evil.com and opened the attachment.
+2. Lack of patching - The patch for CVE-2017-0199 was released in April. This box was released in June 2018, leaving almost a year where the patch was not applied.
+3. Plaintext credentials(ish) - The user Nico should **not** have the credentials of **Tom** even if in encrypted form, as if Nico is compromised then so is Tom. Same goes for the Admin user with **Domain Admin** credentials stored in plaintext.
+4. Sensitive files - Even though I didn't use it, the file ACLs.csv could have been exfiltrated and imported into (an older version of) Bloodhound without having to run bloodhound at all (remotely or locally)
+5. ACLs - The ACLs that Tom had over Claire are likely not required, as well as the ACLs that Claire had over the BACKUP_ADMINS group.
+
+
+
+
+
+
+
 
 
