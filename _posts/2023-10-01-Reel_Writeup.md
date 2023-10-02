@@ -154,10 +154,10 @@ If we found the name of the user receiving the mail, we might be able to createl
 
 ### SMTP (Port 25)
 
-SMTP allows for basic user enumeration, using VRFY, EXPN and RCPT TO and checking the result. 
-
+SMTP allows for basic user enumeration, using VRFY, EXPN and RCPT TO and checking the result.  
+  
 For further info check - [Hacktricks](https://book.hacktricks.xyz/network-services-pentesting/pentesting-smtp)
-
+  
 Unfortunately, these methods don't work... VRFY and EXPN don't work, and RCPT TO always shows as valid no matter the recipient.
 
 ### SSH (Port 22)
