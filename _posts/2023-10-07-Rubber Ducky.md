@@ -1,5 +1,7 @@
 # Make your own rubber ducky
 
+---
+
 If you don't know, a rubber ducky is essentially a pre-programmed USB keyboard that types at a super fast speed. Oh, it also looks like a harmless flash drive ;)
 
 
