@@ -31,4 +31,4 @@ To setup the Arduino IDE, open it up and go to:
 
 - Tools -> and Select "Board Digispark (Default - 16.5mhz)"
 
-
+![Select Digispark](https://raw.githubusercontent.com/Henryisnotavailable/Henryisnotavailable.github.io/main/assets/images/Select_Board.PNG)
