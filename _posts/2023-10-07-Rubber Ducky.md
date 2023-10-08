@@ -1,4 +1,4 @@
-![image](https://github.com/Henryisnotavailable/Henryisnotavailable.github.io/assets/112469853/3de749b2-b4cc-4ad6-9510-16d083a9454e)# Make your own rubber ducky
+# Make your own rubber ducky
 
 ---
 
