@@ -2,12 +2,12 @@
 
 ---
 
-![Credit to camo](https://camo.githubusercontent.com/8944ce0301f2c573d0a1a64ff51e8ee4e98043f4e7da5c5d92452233031623bc/68747470733a2f2f692e6962622e636f2f6a5a32777658302f4e455745562d41542e706e67)
+![Attiny ](https://camo.githubusercontent.com/8944ce0301f2c573d0a1a64ff51e8ee4e98043f4e7da5c5d92452233031623bc/68747470733a2f2f692e6962622e636f2f6a5a32777658302f4e455745562d41542e706e67)
    
 Credit to camo
 
 
-If you don't know, a rubber ducky is essentially a pre-programmed USB keyboard that types at a super fast speed. Oh, it also looks like a harmless flash drive ;)
+If you don't know, a rubber ducky is essentially a pre-programmed USB keyboard that types at a super fast speed that also looks like a harmless flash drive...
 
 
 You can find the official rubber ducky from the Hak5 [website](https://shop.hak5.org/products/usb-rubber-ducky). At a price of ~$80 it's not cheap...
