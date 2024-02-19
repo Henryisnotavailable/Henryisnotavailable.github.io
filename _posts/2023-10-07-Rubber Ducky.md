@@ -24,7 +24,9 @@ Thankfully you can make your own for ~$2.50! All it requires is
 To install the drivers just extract the zip, and run either DPinst64 (for x64 systems) or DPinst (for x32 systems).
 
 To setup the Arduino IDE, open it up and go to: 
-- File -> Preferences -> Additional Boards Manager URLs and enter `https://digistump.com/package_digistump_index.json`
+- File -> Preferences -> Additional Boards Manager URLs and enter `https://digistump.com/package_digistump_index.json` (UPDATE: The Certificate has expired, so use the direct link `https://raw.githubusercontent.com/digistump/arduino-boards-index/master/package_digistump_index.json`)
+
+
 ![Arduino](https://raw.githubusercontent.com/Henryisnotavailable/Henryisnotavailable.github.io/main/assets/images/Capture.PNG)
 
 ![Additonal Board URLs](https://raw.githubusercontent.com/Henryisnotavailable/Henryisnotavailable.github.io/main/assets/images/Additional_Board_Manager.PNG)
