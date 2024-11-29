@@ -101,5 +101,5 @@ Now, you can plug it in to a Windows PC (that you have authorisation to) and run
 
 As a word of warning, the default Keyboard layout is **US** based, so you might run into issues if you use a different keyboard layout.
 
-To make the USB look like an actual USB to the computer, ![this](https://blog.spacehuhn.com/digispark-vid-pid) guide has a good writeup.
+To make the USB look like an actual USB to the computer, [this](https://blog.spacehuhn.com/digispark-vid-pid) guide has a good writeup.
 
