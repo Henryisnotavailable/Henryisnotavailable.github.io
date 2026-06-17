@@ -3,16 +3,14 @@
 ---
 
 ![Attiny ](https://camo.githubusercontent.com/8944ce0301f2c573d0a1a64ff51e8ee4e98043f4e7da5c5d92452233031623bc/68747470733a2f2f692e6962622e636f2f6a5a32777658302f4e455745562d41542e706e67)
-   
-Credit to camo
 
 
-If you don't know, a rubber ducky is essentially a pre-programmed USB keyboard that types at a super fast speed that also looks like a harmless flash drive...
+A rubber ducky is a pre-programmed USB keyboard that types at a super fast speed that also looks like a harmless flash drive.
 
 
-You can find the official rubber ducky from the Hak5 [website](https://shop.hak5.org/products/usb-rubber-ducky). At a price of ~$80 it's not cheap...
+You can find the official rubber ducky from the Hak5 [website](https://shop.hak5.org/products/usb-rubber-ducky). At a price of ~$80 it's not cheap.
 
-Thankfully you can make your own for ~$2.50! All it requires is 
+Thankfully you can make your own for ~$2.50. All it requires is 
 - An [Attiny85](https://www.amazon.co.uk/attiny85/s?k=attiny85)
 - Some [drivers](https://github.com/digistump/DigistumpArduino/releases)
 - The [Arduino IDE](https://www.arduino.cc/en/software)
@@ -94,10 +92,9 @@ Running Digispark Uploader...
 Plug in device now... (will timeout in 60 seconds)
 ```
 
-So plug it in and wait a couple seconds... Ok, should have worked!
+So plug it in and wait a couple seconds.
 
-
-Now, you can plug it in to a Windows PC (that you have authorisation to) and run the code :). 
+Now, you can plug it in to a Windows PC (that you have authorisation to) and run the code. 
 
 As a word of warning, the default Keyboard layout is **US** based, so you might run into issues if you use a different keyboard layout.
 
