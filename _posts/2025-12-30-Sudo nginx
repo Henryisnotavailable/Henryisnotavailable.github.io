@@ -4,13 +4,13 @@
 
 In a recent CTF, I had access to a user that could run `nginx` as root with no password.
 
-There are no entries on [gtfobins](https://gtfobins.github.io/) for this, so it was a think out of the box privesc. (The best kind imo)
+There are no entries on [gtfobins](https://gtfobins.github.io/) for this, so it was a think out of the box privesc.
 
-It was pretty easy to get the root **flag** but actually getting RCE as root was a bit trickier...
+It was  easy to get the root **flag** but actually getting RCE as root was a bit trickier.
 
 ## Getting the flag
 
-Because we can run `nginx` as root, we can specify our own config files, to control what nginx does. 
+Because I can run `nginx` as root, I can specify our own config files, to control what nginx does. 
 
 I copied the original nginx.conf file to /dev/shm/e/nginx.conf and made some changes.
 
@@ -151,9 +151,9 @@ activemq@broker:~$ curl localhost:8001/root
 
 ## RCE
 
-Ok, so we have the flag but we're not really root...  We **could** read `/etc/shadow` and attempt to crack the hash, but that relies on `root` having a weak password.
+Ok, so I have the flag but I'm not really root...  I **could** read `/etc/shadow` and attempt to crack the hash, but that relies on `root` having a weak password.
 
-Well, we can define the log format of `nginx`, so we can potentially write whatever we want to any file... Below shows the new config
+Well, I can define the log format of `nginx`, so I can potentially write whatever I want to any file... Below shows the new config
 
 ```
 user root;
@@ -226,9 +226,9 @@ activemq@broker:/dev/shm/e$ curl localhost:8001/ --user-agent INJECTED
 activemq@broker:/dev/shm/e$ cat access.log
 INJECTED
 ```
-So now we need something to inject, we could potentially inject into /etc/password or /etc/shadow, but that might  completely overwrite it.
+So now I need something to inject, I could potentially inject into /etc/password or /etc/shadow, but that might  completely overwrite it.
 
-So I'll make a backup!
+So I'll make a backup.
 
 I've written a mini python script for this situation, called [fakeroot](https://github.com/Henryisnotavailable/Fakeroot/blob/main/fakeroot.py)
 
