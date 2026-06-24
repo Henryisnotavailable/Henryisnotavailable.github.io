@@ -1,8 +1,5 @@
-The blog has landed!
+Welcome.
 
-Hi, I'm currently working as a Cyber security apprentice. 
+This blog will include whatever I find interesting, CTF writeups and random pieces of information.
 
-This blog will include whatever I find interesting, maybe some writeups and probably random stuff.
-
-Disclaimer: Do not use any information 
-obtained from this blog maliciously, be cool.
+Any malicious use of this information is not condoned or recommended.
