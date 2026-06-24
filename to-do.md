@@ -1,14 +1,15 @@
 ---
 layout: page
-title: "TO DO!"
+title: "To do"
 permalink: /todo
 ---
 
 # To do
-Just a list of topics I want to cover soon
+List of topics to be covered
 
-- DLL hijacking/sideloading
-- How Kerberos works, and how some exploits actually work
-
+- Performing a DLL hijacking/sideloading attack
+- Use of legitimate brands as a front for phishing attacks
+- Misuse of kerberos
+- Additional CTF writeups
 
 
