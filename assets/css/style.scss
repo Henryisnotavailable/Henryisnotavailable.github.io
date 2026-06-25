@@ -1,14 +1,10 @@
 ---
 ---
 
-@import "{{ site.theme }}";
+/* Override Minima defaults */
+$brand-color: #ff4d4d;    // main accent (links, header)
+$text-color: #e5e7eb;     // body text
+$background-color: #0f172a; // page background
+$link-base-color: #38bdf8;  // link colour
 
-/* Your overrides */
-body {
-  background-color: #111;
-  color: #eee;
-}
-
-a {
-  color: #4fd1c5;
-}
+@import "minima";
