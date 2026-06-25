@@ -16,7 +16,7 @@ linkedin_username: "henry-williams-175a23214"
 #########################################################################################
 ######### Nothing below needs to be changed (unless you know what you're doing) #########
 #########################################################################################
-theme: "jekyll-theme-cayman"
+theme: "minima"
 
 rss: rss
 
