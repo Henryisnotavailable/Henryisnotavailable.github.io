@@ -1,0 +1,14 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+/* Your overrides */
+body {
+  background-color: #111;
+  color: #eee;
+}
+
+a {
+  color: #4fd1c5;
+}
