@@ -279,7 +279,7 @@ This one performs a similar function, it creates two new temporary files with `.
 `@('x','-y','-pxmq92ixDm','-oC:\Users\WDAGUtilityAccount\AppData\Local\Temp\nau2zssj.em0','C:\Users\WDAGUtilityAccount\AppData\Local\Temp\nau2zssj.em0.zip')`
 
 From there it checks if the `$exeTempFile` exists and then runs it using the parameters, which ends up running.
-```
+```PowerShell
 C:\Users\WDAGUtilityAccount\AppData\Local\Temp\abr22ax.54d.exe x -y
   -p xmq92ixDm
   -o C:\Users\WDAGUtilityAccount\AppData\Local\Temp\nau2zssj.em0
@@ -291,4 +291,6 @@ If the file doesn't exist, it reverts to using PowerShell to extract the zipfile
 
 The script then looks in the directory for `javaw.exe`, and tries to run it. It tries sleeping for 3 seconds, then deletes the zip file. After this, it sends an ack to the server.
 
+## Conclusion
+It's likely the 7z and javaw.exe files are malware, I haven't yet had a chance to pull them and run them in a sandbox to analyse them, but based on the connections, it's likely a C2 beacon.
 
