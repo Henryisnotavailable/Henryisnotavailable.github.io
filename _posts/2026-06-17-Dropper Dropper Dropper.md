@@ -294,3 +294,5 @@ The script then looks in the directory for `javaw.exe`, and tries to run it. It 
 ## Conclusion
 It's likely the 7z and javaw.exe files are malware, I haven't yet had a chance to pull them and run them in a sandbox to analyse them, but based on the connections, it's likely a C2 beacon.
 
+This leads me to the final question, where did this originate? All will be revealed in the next post.
+
