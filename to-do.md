@@ -11,5 +11,5 @@ List of topics to be covered
 - Use of legitimate brands as a front for phishing attacks
 - Misuse of kerberos
 - Additional CTF writeups
-
+- Opsec
 
