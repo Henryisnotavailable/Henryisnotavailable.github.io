@@ -20,8 +20,10 @@ The issue with this, is what if that inherent trust gets abused by malicious act
 
 ![Dont steal a car](https://github.com/Henryisnotavailable/Henryisnotavailable.github.io/blob/main/assets/images/dontstealacar.jpg?raw=true)
 
-You wouldn't run a command from a stranager on the internet.
+You wouldn't run a command from a stranger on the internet.
+
 You wouldn't download a virus.
+
 If Cloudflare's captcha told you to run a command, to prove you're not a robot, would you? 
 
 Some users might question the sudden change in methods and the suspicious actions it's asking them to commit. Some users might really need to access the site, and will blindly follow the instructions on screen. 
