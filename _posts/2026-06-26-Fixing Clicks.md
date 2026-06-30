@@ -4,7 +4,7 @@ A clickfix attack, is a relatively new type of attack which exploits a user's tr
 
 Take the captcha below.
 
-![https://raw.githubusercontent.com/Henryisnotavailable/Henryisnotavailable.github.io/refs/heads/main/assets/images/Screenshot%202026-06-30%20134016.png](Cloudflare Captcha)
+![https://raw.githubusercontent.com/Henryisnotavailable/Henryisnotavailable.github.io/refs/heads/main/assets/images/Screenshot%202026-06-30%20134016.png]
 
 A Captcha (or turnstile as Cloudflare calls their implementation) has likely been seen by any user of the internet in the last 10 years. Whilst unaware of it, users have been conditioned to inherently trust this page because they see it so often, especially on sites that they trust.
 
