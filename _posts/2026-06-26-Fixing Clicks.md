@@ -108,5 +108,38 @@ With some updates to the text and formatting, it's starting to look better.
 
 ![Cloned cloudflare captcha page](https://github.com/Henryisnotavailable/Henryisnotavailable.github.io/blob/main/assets/images/Screenshot%202026-07-01%20105700.png?raw=true)
 
-The cloudflare turnstile is just an iframe, so I'll also clone that and put it in a second HTML file to work on.
+The cloudflare turnstile itself is an iframe, so I'll clone the code locally and modify it to work in-line.
+```html
+<div id="captcha" role="group" aria-label="Verification widget">
+                        <label id="captcha-check">
+                            <input type="checkbox" id="humanbox">
+                            <span class="captcha-box" aria-hidden="true"></span>
+                            <span class="captcha-label">Verify you are human</span>
+                        </label>
+                        <span class="captcha-brand">
+                            <span class="captcha-brand-logo" aria-hidden="true">
+                                <svg viewBox="0 0 73 25" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cloudflare">
+                                    [..]
+                                  </svg>
+                            </span>
+                            <strong>Cloudflare</strong>
+                            <span>Privacy • Terms</span>
+                        </span>
+                        <input type="hidden" name="cf-turnstile-response" id="cf-chl-widget-8tpoh_response">
+```
 
+Now when a user presses the checkbox in the div, I have javascript which will run and create a popup, as well as run the `document.execCommand("copy")` method. The popup was designed using the colour scheme of Cloudflare, but looks fairly vendor-agnostic, it gives the user a list of steps to complete (which basically says to open the run dialogue and paste it in).
+
+Finally, the user gets a verify button at the end of the pop-up, which when pressed will take them to the site they originally intended to go on.
+
+![Fake captcha page](https://github.com/Henryisnotavailable/Henryisnotavailable.github.io/blob/main/assets/images/Screenshot%202026-07-01%20161516.png?raw=true)
+
+When clicked
+
+![Fake captcha page with a fake captcha](https://github.com/Henryisnotavailable/Henryisnotavailable.github.io/blob/main/assets/images/Screenshot%202026-07-01%20161653.png?raw=true)
+
+And finally the runbox containing the "evil" command
+
+<img width="1649" height="999" alt="image" src="https://github.com/user-attachments/assets/fca04202-6655-4e5d-b8f9-2b6253156ea8" />
+
+I also turned the file into a template file, with a python file in order to generate any clickfix page for a given domain. This could then be used as part of internal phishing training or simulations and awareness.
