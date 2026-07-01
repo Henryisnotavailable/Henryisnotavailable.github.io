@@ -54,6 +54,36 @@ This method does work, but is not frequently employed by attackers, as it requir
 Whilst I think this notification could be more accurate (stating that the website can _**modify**_ the clipboard and write to it) it still serves as extra friction for the user, which may make them less likely to click. 
 
 The other method of copying to the clipboard is the `document.execCommand("copy")` method, which despite being deprecated is supported by the major browsers (as of writing).
+```JavaScript
+        function copyToClipboard(text){
+            // Create a temporary textarea element to hold the text
+            var textArea = document.createElement("textarea");
+            textArea.value = text;
+
+            document.body.appendChild(textArea);
+            textArea.select();
+            console.log(document)
+            try{
+                var successful = document.execCommand("copy");
+                if (successful) {
+                    console.log("Text copied to clipboard: " + text);
+                } else {
+                    console.error("Failed to copy text to clipboard.");
+                }
+            }
+            catch (err){
+                console.error("Failed to copy text: ", err);
+            }
+            document.body.removeChild(textArea);
+        }
+
+
+    document.querySelector("#copyButton").addEventListener("click", function() {
+        copyToClipboard("You've got mail");
+    });
+```
+
+
 
 ![Table showing support for copying via document.execCommand(copy)](https://github.com/Henryisnotavailable/Henryisnotavailable.github.io/blob/main/assets/images/Screenshot%202026-07-01%20094426.png?raw=true)
 
@@ -68,4 +98,15 @@ Clickfix mimics this behaviour, a user will click on a button to start the captc
 
 ### Sidenote
 I believe that the browser should do more to protect users from this attack, even with clipboard access explicitly denied it is still possible to copy text to the clipboard using the `document.execCommand` method.
+
+## Cloning a cloudflare page
+With the core logic understood, the next step is cloning the look and feel of a cloudflare captcha page. `2captcha[.]com` provided a demo cloudflare turnstile challenge, which was perfect to start manually copying the website. Plain copying the whole HTML provides most of the required formatting, all is needed is to update the icon, title and of course, the fake captcha itself.
+
+![Cloned 2captcha[.]com page](https://github.com/Henryisnotavailable/Henryisnotavailable.github.io/blob/main/assets/images/Screenshot%202026-07-01%20105233.png?raw=true)
+
+With some updates to the text and formatting, it's starting to look better.
+
+![Cloned cloudflare captcha page](https://github.com/Henryisnotavailable/Henryisnotavailable.github.io/blob/main/assets/images/Screenshot%202026-07-01%20105700.png?raw=true)
+
+The cloudflare turnstile is just an iframe, so I'll also clone that and put it in a second HTML file to work on.
 
