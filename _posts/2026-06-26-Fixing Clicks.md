@@ -32,7 +32,9 @@ Nevertheless, some users, inevitably, will fall for a clickfix attack the anatom
 
 ## How clickfix attacks are constructed
 
-The core of a clickfix attack is the following JavaScript. Variations of it have been seen, using older deprecated methods like `document.execCommand("copy")`
+The core of a clickfix attack is JavaScript, which copies the attacker's payload to an unsuspecting user's clipboard. 
+The "proper" method of copying to a user's clipboard, is given below (as-per [Mozilla](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Interact_with_the_clipboard))
+
 ```JavaScript
 function updateClipboard(newClip) {
   navigator.clipboard.writeText(newClip).then(
@@ -45,4 +47,25 @@ function updateClipboard(newClip) {
   );
 }
 ```
+This method does work, but is not frequently employed by attackers, as it requires the user to grant permission to the website to "See text and images copied to the clipboard".
+
+![Browser notification](https://github.com/Henryisnotavailable/Henryisnotavailable.github.io/blob/main/assets/images/Screenshot%202026-07-01%20093623.png?raw=true)
+
+Whilst I think this notification could be more accurate (stating that the website can _**modify**_ the clipboard and write to it) it still serves as extra friction for the user, which may make them less likely to click. 
+
+The other method of copying to the clipboard is the `document.execCommand("copy")` method, which despite being deprecated is supported by the major browsers (as of writing).
+
+![Table showing support for copying via document.execCommand(copy)](https://github.com/Henryisnotavailable/Henryisnotavailable.github.io/blob/main/assets/images/Screenshot%202026-07-01%20094426.png?raw=true)
+
+Using this method, a user must perform a "transient activation" which could be a 
+- `mousedown` or `pointerdown` event for a mouse
+- `pointerup` event
+- `touchend` event
+- `keydown` event
+
+In legitimate applications, a user can click a button which copies a string to the clipboard, this the `mousedown` activation.
+Clickfix mimics this behaviour, a user will click on a button to start the captcha process, and this is enough for the browser to treat it as a copy event.
+
+### Sidenote
+I believe that the browser should do more to protect users from this attack, even with clipboard access explicitly denied it is still possible to copy text to the clipboard using the `document.execCommand` method.
 
