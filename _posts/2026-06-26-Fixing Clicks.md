@@ -140,6 +140,7 @@ When clicked
 
 And finally the runbox containing the "evil" command
 
-<img width="1649" height="999" alt="image" src="https://github.com/user-attachments/assets/fca04202-6655-4e5d-b8f9-2b6253156ea8" />
+![Run box](https://github.com/Henryisnotavailable/Henryisnotavailable.github.io/blob/main/assets/images/Screenshot%202026-07-01%20162139.png?raw=true)
 
 I also turned the file into a template file, with a python file in order to generate any clickfix page for a given domain. This could then be used as part of internal phishing training or simulations and awareness.
+Given a URL it will attempt to copy the favicon.ico
