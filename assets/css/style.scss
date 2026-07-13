@@ -1,10 +1,8 @@
 ---
 ---
 
-/* Override Minima defaults */
-$brand-color: #ff4d4d;    // main accent (links, header)
-$text-color: #e5e7eb;     // body text
-$background-color: #0f172a; // page background
-$link-base-color: #38bdf8;  // link colour
-
-@import "minima";
+/* Custom theme overrides */
+$brand-color: #ff4d4d;
+$text-color: #e5e7eb;
+$background-color: #0f172a;
+$link-base-color: #38bdf8;
