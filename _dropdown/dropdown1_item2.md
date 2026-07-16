@@ -3,7 +3,7 @@ layout: page
 title: To do list
 description: My to do list
 dropdown: Projects
-priority: 2
+priority: 1
 ---
 # My to do list
 - Add thesis research / technical deep dive
