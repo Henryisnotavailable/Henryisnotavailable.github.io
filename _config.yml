@@ -23,7 +23,7 @@ theme_switch: "on"
 
 blog: on
 avatar: on
-avatar_image: "assets/img/LogoFinal.png?raw=true"
+avatar_image: "assets/img/Logos.png?raw=true"
 avatar_description: "My inner thoughts"
 
 highlighter_theme: gruvbox
