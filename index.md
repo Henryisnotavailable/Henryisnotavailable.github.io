@@ -2,8 +2,6 @@ Welcome.
 
 This blog will include whatever I find interesting, CTF writeups and random pieces of information.
 
-Any malicious use of this information is not condoned or recommended.
-<div class="alert alert-info" role="alert">
-  <strong>Heads up</strong> This blog is currently being migrated to a new theme so the formatting may be a bit off...
-</div>
+I also plan on translating my University research into less academic, more practical information dumps. 
 
+I'm a fan of developing new ways to exploit old vulnerabilties, and making my life easier when trying to get into a machine, so my tools will also get some words thrown at them in time. 
