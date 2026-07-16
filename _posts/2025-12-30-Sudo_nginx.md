@@ -1,7 +1,5 @@
 # A fun privesc
 
----
-
 In a recent CTF, I had access to a user that could run `nginx` as root with no password.
 
 There are no entries on [gtfobins](https://gtfobins.github.io/) for this, so it was a think out of the box privesc.

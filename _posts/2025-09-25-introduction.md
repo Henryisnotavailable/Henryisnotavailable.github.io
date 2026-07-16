@@ -1,6 +1,5 @@
 ## What's the purpose of this blog?
 
-
 I'm starting this blog to give me an excuse to research into new things, understand them, and maybe even explain them. 
 
 This is also a way to test my knowledge, and document what I've been up to.
