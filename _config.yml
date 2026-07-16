@@ -24,7 +24,7 @@ theme_switch: "on"
 blog: on
 avatar: on
 avatar_image: "assets/img/Logos.png?raw=true"
-avatar_description: "My inner thoughts"
+avatar_description: "Security Engineer, Hacker, Dewin Doeth"
 
 highlighter_theme: gruvbox
 toolbar_priority:        # Order of the items in the toolbar (except for blog and home)
