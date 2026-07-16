@@ -59,16 +59,13 @@
             {% if site.blog == true %}
             <div class="posts-list">
               <a href="{{ '/blog' | prepend: site.baseurl }}">
-                <h4>Recent Posts:</h4>
+                <h4>Most Recent Post:</h4>
               </a>
-              <ul>
-                {% for i in (1..site.recent_posts) %}
-                {% assign post = site.posts[i] %}
-                <li>
-                  <a href="{{ post.url | prepend: site.baseurl  }}">{{ post.title }}</a>
-                </li>
-                {% endfor %}
-              </ul>
+              {% assign recent_post = site.posts | first %}
+              <a href="{{ recent_post.url | prepend: site.baseurl }}">
+                <h5 class="post-title"> {{ recent_post.title }}</h5>
+                <h6 class="post-title"> {{ recent_post.date }} </h6>
+              </a>
             </div>
             {% endif %}
           </div>
