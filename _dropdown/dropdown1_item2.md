@@ -14,3 +14,5 @@ priority: 1
 - Misuse of kerberos
 - Additional CTF writeups
 - Opsec
+- Home Labs
+- Pivoting 101
