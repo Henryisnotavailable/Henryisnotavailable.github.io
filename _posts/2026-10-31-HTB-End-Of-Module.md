@@ -4,13 +4,12 @@ I was given the following brief.
 >`Betty Jayde` works at `Nexura LLC`. We know she uses the password `Texas123!@#` on multiple websites, and we believe she may reuse it at work. Infiltrate Nexura's network and gain command execution on the domain controller. The following hosts are in-scope for this assessment:
 
 Now I ignored the given hosts below from the brief, to more closely simulate a real network.
-
-| Host     | IP Address                                                  |
-| -------- | ----------------------------------------------------------- |
-| `DMZ01`  | `10.129.*.*` **(External)**, `172.16.119.13` **(Internal)** |
-| `JUMP01` | `172.16.119.7`                                              |
-| `FILE01` | `172.16.119.10`                                             |
-| `DC01`   | `172.16.119.11`                                             |
+```text
+DMZ01  = 10.129.*.* (External), 172.16.119.13 (Internal)
+JUMP01 = 172.16.119.7
+FILE01 = 172.16.119.10
+DC01   = 172.16.119.11
+```
 I'll assign the external `10.129.*.*` address to `$targetIP`
 ## Information Gathering
 I'll kick things off with a full port scan. 
