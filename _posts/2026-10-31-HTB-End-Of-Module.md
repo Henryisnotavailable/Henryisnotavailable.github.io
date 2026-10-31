@@ -1,5 +1,5 @@
 # Writeup for the End of the Hack the Box Password Attacks Module
-![](attachments/CompromisedDiagram.png)
+![](/assets/images/CompromisedDiagram.png)
 I was given the following brief.
 >`Betty Jayde` works at `Nexura LLC`. We know she uses the password `Texas123!@#` on multiple websites, and we believe she may reuse it at work. Infiltrate Nexura's network and gain command execution on the domain controller. The following hosts are in-scope for this assessment:
 
