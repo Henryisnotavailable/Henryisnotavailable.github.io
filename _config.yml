@@ -38,6 +38,9 @@ collections:
     output: true
   items:
     output: true
+  writeups:
+    output: true
+    permalink: /writeups/:name/
 
 rss: rss
     
@@ -56,3 +59,8 @@ defaults:
       type: "posts"
     values:
       layout: "default"
+  - scope:
+      path: ""
+      type: "writeups"
+    values:
+      layout: "writeup"

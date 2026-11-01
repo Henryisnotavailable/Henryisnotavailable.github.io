@@ -1,8 +1,7 @@
 ---
-layout: writeup
-categories: [writeups]
+title: Reel Writeup
+date: 2025-10-01
 ---
-
 # Reel Writeup
 ![Reel HTB Icon](/assets/img/reel_writeup/reel_icon.png)
 ---
@@ -825,8 +824,6 @@ One thing I like doing, is thinking about how to patch the system that I just ex
 3. Plaintext credentials(ish) - The user Nico should **not** have the credentials of **Tom** even if in encrypted form, as if Nico is compromised then so is Tom. Same goes for the Admin user with **Domain Admin** credentials stored in plaintext.
 4. Sensitive files - Even though I didn't use it, the file ACLs.csv could have been exfiltrated and imported into (an older version of) Bloodhound without having to run bloodhound at all (remotely or locally)
 5. ACLs - The ACLs that Tom had over Claire are likely not required, as well as the ACLs that Claire had over the BACKUP_ADMINS group.
-
-
 
 
 

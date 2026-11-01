@@ -1,8 +1,7 @@
 ---
-layout: writeup
-categories: [writeups]
+title: A fun privesc
+date: 2025-12-30
 ---
-
 # A fun privesc
 
 In a recent CTF, I had access to a user that could run `nginx` as root with no password.
@@ -276,4 +275,3 @@ root@broker:/dev/shm/e# cd /root
 root@broker:~# ls
 cleanup.sh  root.txt
 ```
-

@@ -1,8 +1,7 @@
 ---
-layout: writeup
-categories: [writeups]
+title: Writeup for the End of the Hack the Box Password Attacks Module
+date: 2026-10-31
 ---
-
 # Writeup for the End of the Hack the Box Password Attacks Module
 ![](/assets/images/CompromisedDiagram.png)
 I was given the following brief.
