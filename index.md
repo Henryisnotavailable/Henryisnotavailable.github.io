@@ -1,4 +1,4 @@
-Welcome.
+Hello.
 
 This blog will include whatever I find interesting, CTF writeups and random pieces of information.
 

@@ -8,7 +8,7 @@ permalink: /writeups/
 {% if writeups.size > 0 %}
 <ul>
   {% for post in writeups %}
-    <li><a href="{{ post.url | relative_url }}">{{ post.date | date: "%B %Y" }} - {{ post.title }}</a></li>
+    <li><a href="{{ post.url | relative_url }}">{{ post.title }}</a>{{post.excerpt}}</li>
   {% endfor %}
 </ul>
 {% else %}
