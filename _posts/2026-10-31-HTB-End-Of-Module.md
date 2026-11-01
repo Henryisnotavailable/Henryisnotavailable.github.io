@@ -1,3 +1,8 @@
+---
+layout: writeup
+categories: [writeups]
+---
+
 # Writeup for the End of the Hack the Box Password Attacks Module
 ![](/assets/images/CompromisedDiagram.png)
 I was given the following brief.

@@ -8,9 +8,24 @@ layout: default
 <h2>Posts</h2>
 <ul>
     {% for post in site.posts %}
+    {% unless post.categories contains 'writeups' %}
     <li>
       <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
     </li>  
+    {% endunless %}
     {% endfor %}
 </ul>
+{% endif %}
+
+{% assign writeups = site.categories.writeups %}
+{% if writeups.size > 0 %}
+<h2>Writeups</h2>
+<ul>
+    {% for post in writeups %}
+    <li>
+      <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+    </li>
+    {% endfor %}
+</ul>
+<p><a href="{{ '/writeups/' | relative_url }}">Browse all writeups</a></p>
 {% endif %}

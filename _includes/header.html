@@ -19,6 +19,7 @@
               {% if site.blog == true %}
                 <li><a href="{{ '/blog' | prepend: site.baseurl }}">Blog</a></li>
               {% endif %}
+              <li><a href="{{ '/writeups/' | relative_url }}">Writeups</a></li>
 
               {% for page in site.dropdown %}
                 <li class="dropdown dropdown-{{ page.dropdown }}">
