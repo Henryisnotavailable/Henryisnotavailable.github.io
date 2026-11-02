@@ -1,43 +1,17 @@
-let layer1, layer2, layer3, layer4;
 let themeBase;
 
 $(document).ready(() => {
-  layer1 = d3.select("#bg-layer1");
-  layer2 = d3.select("#bg-layer2");
-  layer3 = d3.select("#bg-layer3");
-  layer4 = d3.select("#bg-layer4");
   themeBase = localStorage.getItem("themeBase") || document.getElementById("css-theme").getAttribute("href").match("-(light|dark).css")[1];
   setTheme(themeBase);
-  makeStrips([layer1, layer2, layer3, layer4]);
-  $(document).scroll(updateBackground);
-  $(window).resize(updateBackground);
+  $(document).scroll(updateHeadingOverlays);
+  $(window).resize(updateHeadingOverlays);
   $("table").addClass("table table-hover");
   $("img").addClass("img img-responsive");
   $(".content-div > h1, .content-div > a > h1").addClass("h1-strip");
-  setTimeout(updateBackground, 500);
+  setTimeout(updateHeadingOverlays, 500);
 });
 
-function drawLine(x, y, w, h, layer) {
-  let line = layer.append("rect")
-    .attr("x", x)
-    .attr("y", y)
-    .attr("width", w)
-    .attr("height", h)
-    .attr("fill", "url(#Gradient1)");
-}
-
-function updateBackground() {
-  // Update stripes
-  let contentX = ($(".content-div").offset().left);
-  let layer1Y = window.pageYOffset / 5;
-  let layer2Y = window.pageYOffset / 4;
-  let layer3Y = window.pageYOffset / 3;
-  let layer4Y = window.pageYOffset / 2;
-  layer1.attr("transform", `translate(${contentX}, ${-layer1Y})`);
-  layer2.attr("transform", `translate(${contentX}, ${-layer2Y})`);
-  layer3.attr("transform", `translate(${contentX}, ${-layer3Y})`);
-  layer4.attr("transform", `translate(${contentX}, ${-layer4Y})`);
-  // Update transparent overlays over h1
+function updateHeadingOverlays() {
   $(".h1-overlay").remove();
   $(".h1-strip")
     .filter((index, node) => $(node).isInViewport())
@@ -52,18 +26,6 @@ function updateBackground() {
       overlay.style.height = `${height+marginTop}px`;
       document.body.appendChild(overlay);
   });
-}
-
-function makeStrips(layers) {
-  let layerProbs = new Array(layers.length).fill(0).map((_, index) => index / layers.length);
-  for (let i = 10; i < 100; i *= 1.05) {
-    let index = Math.floor(Math.random() * layers.length);
-    let randomLayer = layers[index];
-    if (Math.random() > layerProbs[index]) {
-      drawLine(-i, 100, 1, 1000 * (Math.random() + 1), randomLayer);
-    }
-  }
-  updateBackground();
 }
 
 function toggleTheme() {

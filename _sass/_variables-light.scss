@@ -42,9 +42,6 @@ $body-background:       linear-gradient($body-bg-header 10%, $body-bg 100%) no-r
 $text-color:            $gray-darker;
 $shadow-color:          transparent;
 $h1-bg:                 rgba($gray-white, 0.5);
-$bg-color1:             $brand-primary;
-$bg-color2:             $brand-danger;
-
 //** Global textual link color.
 $link-color:            lighten($brand-primary, 15%);
 //** Link hover color set via `darken()` function.

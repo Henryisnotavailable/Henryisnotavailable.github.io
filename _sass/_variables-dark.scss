@@ -42,9 +42,6 @@ $body-background:       $body-bg;
 $text-color:            $gray-lighter;
 $shadow-color:          currentColor;
 $h1-bg:                 rgba($body-bg-header, 0.2);
-$bg-color1:             #193a2b;
-$bg-color2:             #172331;
-
 //** Global textual link color.
 $link-color:            lighten($brand-primary, 15%);
 //** Link hover color set via `darken()` function.
