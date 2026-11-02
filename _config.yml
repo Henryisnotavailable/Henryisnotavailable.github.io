@@ -23,7 +23,7 @@ theme_switch: "on"
 
 blog: on
 avatar: on
-avatar_image: "assets/img/Logos.png?raw=true"
+avatar_image: "assets/img/logo_cropped.png?raw=true"
 avatar_description: "Security Engineer, Hacker, Dewin Doeth"
 
 highlighter_theme: gruvbox
