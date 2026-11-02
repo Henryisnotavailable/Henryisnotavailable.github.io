@@ -7,7 +7,7 @@
 //
 //## Gray and brand colors for use across Bootstrap.
 
-$gray-base:              #000;
+$gray-base:              #0b1117;
 $gray-darker:            lighten($gray-base, 13.5%); // #222
 $gray-darker-hover: 	   darken($gray-darker, 5%);
 $gray-dark:              lighten($gray-base, 20%);   // #333
@@ -16,11 +16,11 @@ $gray-light:             lighten($gray-base, 46.7%); // #777
 $gray-lighter:           lighten($gray-base, 82.5%);
 $gray-white:             lighten($gray-base, 100%); // #fff
 
-$brand-primary:         #1F7F1F;
-$brand-success:         #3F7F3F;
-$brand-info:            #3F7F7F;
-$brand-warning:         #7F6F3F;
-$brand-danger:          #7F3F3F;
+$brand-primary:         #42b8a5;
+$brand-success:         #4f9d78;
+$brand-info:            #579bb2;
+$brand-warning:         #bda76b;
+$brand-danger:          #b66f78;
 
 // Icons colors
 $github-color:          #666;
@@ -35,14 +35,19 @@ $envelope-color:        #c71610;
 
 //** Background color for `<body>`.
 $body-bg-header:        $gray-base;
-$body-bg:               darken(desaturate($brand-primary, 50%), 15%);
+$body-bg:               #111b21;
+$body-background:
+  radial-gradient(1px 1px at 24px 36px, rgba($gray-white, 0.28) 50%, transparent 100%) 0 0 / 150px 150px repeat,
+  radial-gradient(1px 1px at 92px 114px, rgba($brand-info, 0.24) 50%, transparent 100%) 0 0 / 230px 230px repeat,
+  radial-gradient(ellipse at 78% 8%, rgba($brand-info, 0.12), transparent 52%) no-repeat,
+  linear-gradient($body-bg-header 10%, $body-bg 100%) no-repeat;
 
 //** Global text color on `<body>`.
 $text-color:            $gray-lighter;
 $shadow-color:          currentColor;
 $h1-bg:                 rgba($body-bg-header, 0.2);
-$bg-color1:             $brand-primary;
-$bg-color2:             $brand-danger;
+$bg-color1:             #164b48;
+$bg-color2:             #17263a;
 
 //** Global textual link color.
 $link-color:            lighten($brand-primary, 15%);

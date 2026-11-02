@@ -36,6 +36,7 @@ $envelope-color:        #c71610;
 //** Background color for `<body>`.
 $body-bg-header:        $gray-white;
 $body-bg:               desaturate(lighten($brand-danger, 60%), 30%);
+$body-background:       linear-gradient($body-bg-header 10%, $body-bg 100%) no-repeat;
 
 //** Global text color on `<body>`.
 $text-color:            $gray-darker;

@@ -2,8 +2,7 @@
 // General
 
 body {
-  background: linear-gradient($body-bg-header 10%, $body-bg 100%);
-  background-repeat: no-repeat;
+  background: $body-background;
   background-attachment: fixed;
   height: 100%;
   width: 100%;
@@ -38,9 +37,9 @@ h3,
 h4,
 h5,
 h6 {
-  color: $brand-danger;
-  text-decoration-color: $brand-danger;
-  border-bottom-color: $brand-danger;
+  color: $brand-primary;
+  text-decoration-color: $brand-primary;
+  border-bottom-color: $brand-primary;
 }
 
 #background-div,
